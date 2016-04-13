@@ -11,7 +11,9 @@ No branch **master**, temos apenas o README e o script SQL do banco de dados MYS
 
 O nome do banco é **estoque** e o collate dele é **utf8_general_ci**.
 
-Cada branch deste repositório corresponde a 1 fase listada logo abaixo:
+Cada branch deste repositório corresponde a 1 fase (listada logo abaixo).
+
+Cada branch foi gerado a partir da última fase realizada em cada etapa e não do master.
 
 ## Fases:
 
