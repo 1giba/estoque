@@ -4,3 +4,5 @@
 * **produtos/**: inserção, atualização e listagem de produtos
 * **usuarios/**: inserção, atualização e listagem de usuarios + login + logout
 * **index.php**: menu inicial (faz o link para os diretórios)
+
+[Voltar para a **master**](https://github.com/gjunior-tray/estoque/tree/master)
