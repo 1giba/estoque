@@ -19,7 +19,7 @@ Cada branch deste repositório corresponde a 1 fase listada logo abaixo:
 
 #### 1.1 Totalmente Procedural
 
-**branch:** v1.1
+**branch:** [v1.1](https://github.com/gjunior-tray/estoque/tree/v1.1)
 
 **Info:** Início da criação do projeto totalmente procedural.
 
