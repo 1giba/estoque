@@ -46,7 +46,7 @@ Cada branch foi gerado a partir da última fase realizada em cada etapa e não d
 
 #### 2.1 Passando para POO
 
-**branch:** v2.1
+**branch:** [v2.1](https://github.com/gjunior-tray/estoque/tree/v2.1)
 
 **Info:** Organizando as funcionalidades em classes.
 
