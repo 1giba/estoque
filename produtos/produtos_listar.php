@@ -1,38 +1,15 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
-// Fazer conexão com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se existe erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Consulta principal de produtos
-$sql  = "SELECT * FROM produtos";
-
-// Caso venha o nome, adicionar no SQL
-if (!empty($_GET['nome'])) {
-	$sql .= " WHERE nome LIKE '%{$_GET['nome']}%'";
-}
-
-// Executar consulta
-$qry = mysqli_query($con, $sql);
-
-// Inicializar produtos
-$produtos = [];
-
-// Iterar no resultado da consulta de produtos
-while ($row = mysqli_fetch_array($qry)) {
-	// Adicionar dados do produto no array
-	$produtos[] = $row;
-}
+// Captura os produtos
+$produtos = selecionaTodosProdutos($con, !empty($_GET['nome']) ? $_GET['nome'] : '');
 ?>
 <html>
 	<head>
@@ -40,10 +17,13 @@ while ($row = mysqli_fetch_array($qry)) {
 	</head>
 	<body>
 		<h1>Listar Produtos</h1>
-		<?php if (!empty($_SESSION['mensagem'])) { ?>
-			<h3 style="color:green"><?php echo $_SESSION['mensagem']; ?></h3>
-			<?php unset($_SESSION['mensagem']); ?>
-		<?php } ?>
+		<?php 
+			// Disponibiliza as funções relacionadas às mensagens flash
+			include '../mensagem_flash.php';
+
+			// Exibe mensagem flash se houver
+			echo alerta();
+		?>
 		<hr>
 		<form method="get" action="produtos_listar.php">
 			<label>Procurar por nome:</label>

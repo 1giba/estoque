@@ -1,32 +1,25 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
-// Caso o usuário não tenha o perfil admin, retorna para o index
-if ($_SESSION['usuario']['perfil'] !== 'admin') {
-	echo '<h1>Acesso não permitido</h1>';
-	echo '<p><a href="../index.php">Voltar</a></p>';
-	exit;
-}
+// Permite apenas o perfil admin
+include '../somente_admin.php';
 
 // Inicializar variáveis
 $nome   = '';
 $email  = '';
 $perfil = '';
 
+// Disponibiliza as funções relacionadas às mensagens flash
+include '../mensagem_flash.php';
+
 // Caso vierem variáveis de post
 if ($_POST) {
-	// Fazer a conexão com o banco de dados
-	$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+	// Captura a conexão aberta
+	$con = include '../abre_conexao.php';
 
-	// Verificar se existe erro na conexão
-	if (mysqli_connect_errno()) {
-		die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-	}
+	// Disponibiliza as funções de operações com banco
+	include '../operacoes_banco.php';
 
 	// Variáveis recebem dados do post
 	$nome   = $_POST['nome'];
@@ -34,20 +27,25 @@ if ($_POST) {
 	$perfil = $_POST['perfil'];
 
 	// Verifica se o cliente já está utilizando o e-mail
-	$qry = mysqli_query($con, 'SELECT * FROM usuarios WHERE email = \'' .$email . '\'');
+	$emailJaCadastrado = !empty(selecionaUsuarioPorEmail($con, $email));
 
 	// Caso tenha 1 registro já com esse e-mail, criar alerta
-	if (mysqli_num_rows($qry)) {
-		$_SESSION['mensagem'] = 'E-mail já utilizado, adicione outro.';
+	if ($emailJaCadastrado) {
+		// Armazena a mensagem flash
+		flash('E-mail já utilizado, adicione outro.', 'erro');
 	// Caso não tenha usuário com esse e-mail...
 	} else {
 		// Caso as senhas forem diferentes, criar alerta
 		if ($_POST['senha'] != $_POST['senha_confirmacao']) {
-			$_SESSION['mensagem'] = 'Senhas não conferem!';
+			// Armazena a mensagem flash
+			flash('Senhas não conferem!', 'erro');
 		// Caso a inclusão for sucesso, redirecionar para a lista com mensagem de sucesso
-		} elseif (mysqli_query($con, "INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('{$nome}', '{$email}', '{$_POST['senha']}', '{$perfil}')")) {
-			$_SESSION['mensagem'] = 'Usuário inserido com sucesso';
+		} elseif (insereUsuario($con, $nome, $email, $perfil, $_POST['senha'])) {
 
+			// Armazena a mensagem flash
+			flash('Usuário inserido com sucesso!', 'sucesso');
+
+			// Redireciona para a listagem de usuários
 			header("Location: usuarios_listar.php");
 			exit;
 		}
@@ -61,11 +59,8 @@ if ($_POST) {
 	<body>
 		<h1>Novo Usuário</h1>
 		<?php 
-			if (!empty($_SESSION['mensagem'])){
-				echo "<h2 style='color: red;'>{$_SESSION['mensagem']}</h2>";
-
-				unset($_SESSION['mensagem']);
-			} 
+		    // Exibe mensagem flash se houver
+			echo alerta(); 
 		?>
 		<hr>
 		<form method="post" action="usuarios_inserir.php">

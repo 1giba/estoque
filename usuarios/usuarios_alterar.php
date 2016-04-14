@@ -1,34 +1,23 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
-// Caso o usuário não tenha o perfil admin, retorna para o index
-if ($_SESSION['usuario']['perfil'] !== 'admin') {
-	echo '<h1>Acesso não permitido</h1>';
-	echo '<p><a href="../index.php">Voltar</a></p>';
-	exit;
-}
+// Permite apenas o perfil admin
+include '../somente_admin.php';
 
 // Caso não passe na URL o id do usuário, gerar um erro
 if (empty($_GET['id'])) {
 	die('Você deve informar o id do usuario');
 }
 
-// Fazer a conexão com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se existe erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Consulta usuário para alteração de dados
-$qry = mysqli_query($con, 'SELECT * FROM usuarios WHERE id = ' . $_GET['id']);
-$usuario = mysqli_fetch_array($qry);
+// Captura o usuário por id
+$usuario = selecionaUsuarioPorId($con, $_GET['id']);
 
 // Caso não encontre o usuário, exibir mensagem
 if (empty($usuario)) {
@@ -36,18 +25,20 @@ if (empty($usuario)) {
 	exit;
 }
 
+// Disponibiliza as funções relacionadas às mensagens flash
+include '../mensagem_flash.php';
+
 // Se vierem variáveis do post...
 if ($_POST) {
 	// Inicializar variável
-	$num = 0;
+	$emailJaCadastrado = false;
 	// Verificar se o e-mail do usuário cadastro é diferente do post
 	if ($usuario['email'] !== $_POST['email']) {
 		// atualiza o e-mail do usuário com o e-mail do post
-		$usuario['email'] = $_POST['email'];		
-		// Consultar se o e-mail do post foi cadastrado com outro usuário
-		$qry = mysqli_query($con, 'SELECT * FROM usuarios WHERE email = \'' . $usuario['email'] . '\'');
-		// Armazena se encontrou usuário com e-mail 
-		$num = mysqli_num_rows($qry);
+		$usuario['email'] = $_POST['email'];
+
+		// verifica se o e-mail já não está cadastrado
+		$emailJaCadastrado = !empty(selecionaUsuarioPorEmail($con, $usuario['email']));
 	}
 
 	// Atualizam os dados
@@ -55,23 +46,22 @@ if ($_POST) {
 	$usuario['perfil'] = $_POST['perfil'];	
 
 	// Caso o e-mail já esteja sendo utilizado, criar alerta
-	if ($num) {
-		$_SESSION['mensagem'] = 'E-mail já utilizado, adicione outro.';
+	if ($emailJaCadastrado) {
+		// Armazena a mensagem flash
+		flash('E-mail já utilizado, adicione outro.', 'erro');
 	// Senão
 	} else {
-		// Monta Update
-		$sql = "UPDATE usuarios SET nome='{$usuario['nome']}', email='{$usuario['email']}', perfil='{$usuario['perfil']}'";
-		if ($_POST['senha'] && $_POST['senha_confirmacao']) {
-			$sql .= ", senha='{$_POST['senha']}'";
-		}
-		$sql .= " WHERE id={$usuario['id']}";
-
 		// Valida as senhas
 		if ($_POST['senha'] != $_POST['senha_confirmacao']) {
-			$_SESSION['mensagem']= 'Senhas não conferem!';
+			// Armazena a mensagem flash
+			flash('Senhas não conferem!', 'erro');
 		// Caso a atualização for sucesso, redirecionar para a lista com mensagem de sucesso
-		} elseif (mysqli_query($con, $sql)) {
-			$_SESSION['mensagem'] = 'Usuário alterado com sucesso';
+		} elseif (atualizaUsuario($con, $usuario['id'], $ususario['nome'], $usuario['email'], $usuario['perfil'], !empty($_POST['senha']) ? $_POST['senha'] : '')) {
+
+			// Armazena a mensagem flash
+			flash('Usuário alterado com sucesso!', 'sucesso');
+
+			// Redireciona para a listagem de usuários
 			header('Location: usuarios_listar.php');
 			exit;
 		}
@@ -85,10 +75,10 @@ if ($_POST) {
 	<body>
 		<h1>Alterar Usuário</h1>
 		<h3>Usuário #<?php echo $usuario['id']; ?></h3>
-		<?php if ($_SESSION['mensagem']) { ?>
-			<h3 style="color:red"><?php echo $_SESSION['mensagem']; ?></h3>
-			<?php unset($_SESSION['mensagem']); ?>
-		<?php } ?>
+		<?php 
+			// Exibe mensagem flash se houver
+			echo alerta(); 
+		?>
 		<hr>
 		<form method="post" action="usuarios_alterar.php?id=<?php echo $usuario['id']; ?>">
 			<input type="hidden" name="id" value="<?php echo $usuario['id']; ?>">

@@ -1,24 +1,24 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
 // Se vierem os dados de post
 if ($_POST) {
-	// Fazer a conexao com o banco de dados
-	$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+	// Captura a conexão aberta
+	$con = include '../abre_conexao.php';
 
-	// Verificar se existe erro na conexão
-	if (mysqli_connect_errno()) {
-		die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-	}
+	// Disponibiliza as funções de operações com banco
+	include '../operacoes_banco.php';
 
 	// Caso o produto seja incluido com sucesso, criar alerta e redirecionar para a lista
-	if (mysqli_query($con, "INSERT INTO produtos (nome) VALUES ('{$_POST['nome']}')")) {
-		$_SESSION['mensagem'] = 'Produto inserido com sucesso';
+	if (insereProduto($con, $_POST['nome'])) {
+		// Disponibiliza as funções relacionadas às mensagens flash
+		include '../mensagem_flash.php';
+		
+		// Armazena a mensagem flash
+		flash('Produto inserido com sucesso', 'sucesso');
+
+		// Redireciona para a listagem de produtos
 		header("Location: produtos_listar.php");
 		exit;
 	}

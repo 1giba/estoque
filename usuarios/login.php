@@ -1,24 +1,22 @@
 <?php
-// Inicializa a sessão
-session_start();
+
+// Disponibiliza as funções relacionadas às mensagens flash
+include '../mensagem_flash.php';
 
 // Se vierem os dados do post
 if ($_POST) {
-	// Fazer conexão com o banco de dados
-	$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+	// Captura a conexão aberta
+	$con = include '../abre_conexao.php';
 
-	// Verificar se existe erro na conexão
-	if (mysqli_connect_errno()) {
-		die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-	}	
+	// Disponibiliza as funções de operações com banco
+	include '../operacoes_banco.php';
 
-	// Consultar o usuário pelo e-mail
-	$qry = mysqli_query($con, "SELECT * FROM usuarios WHERE email = '{$_POST['email']}'");
-	// Armazena as informações do usuário em array
-	$usuario = mysqli_fetch_array($qry);
+	// Captura o usuário por e-mail
+	$usuario = selecionaUsuarioPorEmail($con, $_POST['email']);
 	// Valida as senhas, cria alerta
-	if (!mysqli_num_rows($qry) || $_POST['senha'] !== $usuario['senha']) {
-		$_SESSION['mensagem'] = 'Usuário/Senha inválidos!';
+	if (empty($usuario) || $_POST['senha'] !== $usuario['senha']) {
+		// Armazena a mensagem flash
+		flash('Usuário/Senha inválidos!', 'erro');
 	// Senha ok!
 	} else {		
 		// Joga os dados do usuário na sessão
@@ -36,11 +34,8 @@ if ($_POST) {
 	<body>
 		<h1>Acesso ao Sistema</h1>
 		<?php 
-			if (!empty($_SESSION['mensagem'])){
-				echo "<h2 style='color: red;'>{$_SESSION['mensagem']}</h2>";
-
-				unset($_SESSION['mensagem']);
-			}
+			// Exibe mensagem flash se houver
+			echo alerta();
 		?>
 		<hr>
 		<form method="post" action="login.php">

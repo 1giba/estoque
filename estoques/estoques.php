@@ -1,28 +1,15 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
-// Fazer a conexao com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se tem erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Fazer consulta de produtos
-$qry = mysqli_query($con, 'SELECT * FROM produtos');
-// Inicializar array
-$produtos = [];
-// Iterar registros
-while ($row = mysqli_fetch_array($qry)) {
-	// Adicionar dados do produto no array
-	$produtos[] = $row;
-}
+// Captura todos os produtos
+$produtos = selecionaTodosProdutos($con);
 
 // Inicializar a variável
 $alerta = '';
@@ -36,11 +23,8 @@ if ($_POST) {
 			continue;
 		}
 
-		// Inserir na tabela de estoque
-		$sql = "INSERT INTO estoques (usuario_id, produto_id, quantidade) VALUES ({$_SESSION['usuario']['id']}, {$produto['id']}, {$_POST['produto-' . $produto['id']]})";
-
 		// Se inserir com sucesso
-		if (mysqli_query($con, $sql)) {
+		if (insereEstoque($con, $_SESSION['usuario']['id'], $produto['id'], $_POST['produto-' . $produto['id']])) {
 			// Exibir adição de produto em verde
 			if ($_POST['produto-' . $produto['id']] > 0) {
 				$alerta .= "<span style='color:green'>Produto {$produto['nome']}: +" . $_POST["produto-{$produto['id']}"] . "</span><br>";
@@ -49,10 +33,8 @@ if ($_POST) {
 				$alerta .= "<span style='color:red'>Produto {$produto['nome']}: " . $_POST["produto-{$produto['id']}"] . "</span><br>";
 			}
 
-			// Atualizar quantidade do produto
-			$sql2 = "UPDATE produtos SET quantidade = quantidade + {$_POST['produto-' . $produto['id']]} WHERE id = {$produto['id']}";
 			// Caso for atualizado com sucesso
-			if (mysqli_query($con, $sql2)) {
+			if (atualizaEstoqueProduto($con, $produto['id'], $_POST['produto-' . $produto['id']])) {
 				// Criar mensagem de alerta
 				$alerta .= "<span style='color:blue'>Produto {$produto['nome']} alterado o estoque de {$produto['quantidade']} para " . ($produto['quantidade'] + $_POST['produto-' . $produto['id']]) . "</span><br>";
 				// Atualizar resultado de produtos que irá iterar no html

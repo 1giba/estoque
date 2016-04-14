@@ -1,27 +1,20 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
 // Caso não passe na URL o id do usuário, gerar um erro
 if (empty($_GET['id'])) {
 	throw new Exception('Não possui id de alteração');
 }
 
-// Fazer a conexão com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se existe erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Consulta usuário para alteração de dados
-$qry = mysqli_query($con, 'SELECT * FROM usuarios WHERE id = ' . $_GET['id']);
-$usuario = mysqli_fetch_array($qry);
+// Captura usuário pelo id
+$usuario = selecionaUsuarioPorId($_GET['id']);
 
 // Caso não encontre o usuário, exibir mensagem
 if (empty($usuario)) {
@@ -29,14 +22,21 @@ if (empty($usuario)) {
 	exit;
 }
 
+// Disponibiliza as funções relacionadas às mensagens flash
+include '../mensagem_flash.php';
+
 // Se vierem variáveis do post...
 if ($_POST) {
 	// Valida as senhas
 	if ($_POST['senha'] !== $_POST['senha_confirmacao']) {
-		$_SESSION['mensagem'] = 'Senhas não conferem!';
+		// Armazena a mensagem flash
+		flash('Senhas não conferem!', 'erro');
 	// Caso a atualização for sucesso, redireciona para a lista e exibe mensagem de sucesso
-	} elseif (mysqli_query($con, "UPDATE usuarios SET senha='{$_POST['senha']}' WHERE id={$usuario['id']}")) {
-		$_SESSION['mensagem'] = 'Usuário alterado com sucesso';
+	} elseif (atualizaSenha($con, $usuario['id'], $_POST['senha'])) {
+		// Armazena a mensagem flash
+		flash('Usuário alterado com sucesso', 'sucesso');
+
+		// Redireciona para a listagem de usuários
 		header('Location: usuarios_listar.php');
 		exit;
 	}
@@ -49,10 +49,10 @@ if ($_POST) {
 	<body>
 		<h1>Alterar Senha</h1>
 		<h3>Usuário #<?php echo $usuario['nome'] . ' - ' . $usuario['email'] . ' [' . $usuario['perfil'] . ']'; ?></h3>
-		<?php if ($_SESSION['mensagem']) { ?>
-			<h3 style="color:red"><?php echo $_SESSION['mensagem']; ?></h3>
-			<?php unset($_SESSION['mensagem']); ?>
-		<?php } ?>
+		<?php 
+			// Exibe mensagem flash se houver
+			echo alerta(); 
+		?>
 		<hr>
 		<form method="post" action="alterar_senha.php?id=<?php echo $usuario['id']; ?>">
 			<label>Informe a senha:</label>

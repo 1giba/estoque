@@ -1,61 +1,24 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
-// Caso o usuário não tenha o perfil admin, retorna para o index
-if ($_SESSION['usuario']['perfil'] !== 'admin') {
-	echo '<h1>Acesso não permitido</h1>';
-	echo '<p><a href="../index.php">Voltar</a></p>';
-	exit;
-}
+// Permite apenas o perfil admin
+include '../somente_admin.php';
 
-// Fazer a conexão com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se existe erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Consulta Principal
-$sql = "SELECT * FROM usuarios WHERE 1=1";
+// Prepara os parametros da função
+$busca 		    = !empty($_GET['busca']) ? $_GET['busca'] : '';
+$palavraBuscada = !empty($_GET['palavra_buscada']) ? $_GET['palavra_buscada'] : '';
+$perfil         = !empty($_GET['perfil']) ? $_GET['perfil'] : '';
+$ordenar        = !empty($_GET['ordenar']) ? $_GET['ordenar'] : '';
 
-// Caso tiver a palavra buscada, adicionar o filtro
-if(!empty($_GET['palavra_buscada'])){
-	if($_GET['busca'] == 'nome'){
-		$sql .= " AND nome LIKE '%{$_GET['palavra_buscada']}%'";
-	}else{
-		if($_GET['busca'] == 'email'){
-			$sql .= " AND email = '{$_GET['palavra_buscada']}'";
-		}
-	}
-}
-
-// Caso tiver o perfil do usuário, adicionar o filtro
-if (!empty($_GET['perfil'])) {
-	$sql .= " AND perfil = '{$_GET['perfil']}'";
-}
-
-// Caso tiver ordenação, adicionar na consulta
-if (!empty($_GET['ordenar'])) {
-	$sql .= " ORDER BY {$_GET['ordenar']}";
-}
-
-// Executar a consulta
-$qry = mysqli_query($con, $sql);
-
-// Inicializar a variável para os dados da consulta
-$usuarios = [];
-
-// Iterar no resultado da consulta
-while ($row = mysqli_fetch_array($qry)) {
-	// Adicionar os dados do usuário no array
-	$usuarios[] = $row;
-}
+// Captura os usuários
+$usuarios = selecionaUsuarios($con, $busca, $palavraBuscada, $perfil, $ordenar);
 ?>
 <html>
 	<head>
@@ -63,10 +26,13 @@ while ($row = mysqli_fetch_array($qry)) {
 	</head>
 	<body>
 		<h1>Listar Usuários</h1>
-		<?php if (!empty($_SESSION['mensagem'])) { ?>
-			<h3 style="color:green"><?php echo $_SESSION['mensagem']; ?></h3>
-			<?php unset($_SESSION['mensagem']); ?>
-		<?php } ?>
+		<?php 
+			// Disponibiliza as funções relacionadas às mensagens flash
+			include '../mensagem_flash.php';
+
+			// Exibe mensagem flash se houver
+			echo alerta(); 
+		?>
 		<hr>
 		<form method="get" action="usuarios_listar.php">
 			<select name="busca">

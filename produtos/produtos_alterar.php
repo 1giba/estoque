@@ -1,28 +1,20 @@
 <?php
-// Caso o usuário não esteja logado, redireciona para o login
-session_start();
-if (empty($_SESSION['usuario'])) {
-	header("Location: ../usuarios/login.php");
-	exit;
-}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 
 // Caso não passe na URL o id do produto, gerar exceção
 if (empty($_GET['id'])) {
 	throw new Exception('Não possui id de alteração');
 }
 
-// Fazer conexão com o banco de dados
-$con = mysqli_connect('mysql.php4devs', 'root', 'docker', 'estoque');
+// Captura a conexão aberta
+$con = include '../abre_conexao.php';
 
-// Verificar se existe erro na conexão
-if (mysqli_connect_errno()) {
-	die('Falha ao conectar-se com o MySQL: ' . mysqli_connect_error());
-}
+// Disponibiliza as funções de operações com banco
+include '../operacoes_banco.php';
 
-// Consultar os dados do produto
-$qry = mysqli_query($con, 'SELECT * FROM produtos WHERE id = ' . $_GET['id']);
-// Executar a consulta
-$produto = mysqli_fetch_array($qry);
+// Captura o produto pelo ID
+$produto = selecionaProdutoPorId($con, $_GET['id']);
 
 // Caso não encontre o produto, exibir mensagem
 if (empty($produto)) {
@@ -33,24 +25,21 @@ if (empty($produto)) {
 // Se vierem dados do post...
 if ($_POST) {
 	// Atualizar o nome do produto
-	if (mysqli_query($con, "UPDATE produtos SET nome='{$_POST['nome']}' WHERE id={$produto['id']}")) {
-		// Criar mensagem de alerta
-		$_SESSION['mensagem'] = 'Produto alterado com sucesso';
+	if (atualizaNomeDoProduto($con, $produto['id'], $_POST['nome'])) {
+		// Disponibiliza as funções relacionadas às mensagens flash
+		include '../mensagem_flash.php';
+
+		// Armazena a mensagem flash
+		flash('Produto alterado com sucesso', 'sucesso');
+		
 		// Redirecionar para a lista e exibir mensagem
 		header('Location: produtos_listar.php');
 		exit;
 	}
 }
 
-// Inicializar variável de estoque
-$estoques = [];
-// Consultar movimento de estoque
-$qry2 = mysqli_query($con, "SELECT e.*, u.nome as nome_usuario FROM estoques e INNER JOIN usuarios u ON u.id = e.usuario_id WHERE e.produto_id = {$produto['id']} ORDER BY e.criado_em DESC");
-// Iterar nos registros da consulta
-while ($row = mysqli_fetch_array($qry2)) {
-	// Armazenar dados da movimentação no array
-	$estoques[] = $row;
-}
+// Captura a movimentação do estoque do produto
+$estoques = selecionaMovimentoEstoqueDoProduto($con, $produto['id']);
 ?>
 <html>
 	<head>
