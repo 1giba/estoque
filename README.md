@@ -52,7 +52,7 @@ Cada branch foi gerado a partir da última fase realizada em cada etapa e não d
 
 #### 2.2 Herança
 
-**branch:** v2.2
+**branch:** [v2.2](https://github.com/gjunior-tray/estoque/tree/v2.2)
 
 **Info:** Observando o que as classes têm em comum
 
