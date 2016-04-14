@@ -5,6 +5,17 @@
 * Criação de uma aplicação exemplo com PHP/MySQL; 
 * Amostragem do desenvolvimento em fases, do procedural ao framework, para o máximo de entendimento.
 
+**Observações:** O objetivo aqui não é criar o sistema perfeito, e sim mostrar de forma simples todas as etapas de uma evolução de um sistema.
+
+## Sistema:
+
+* A aplicação deverá ter administradores e funcionários como usuários e um cadastro de produtos;
+* Os administradores podem cadastrar, alterar e listar todos os usuários;
+* Os funcionários não tem acesso aos dados de outros usuários, apenas conseguem alterar sua senha;
+* Não será possível alterar a quantidade do produto no seu cadastro ou alteração;
+* A alteração da quantidade do produto deverá ser feita numa tela de baixa ou reposição de estoque;
+* O histórico da movimentação do estoque ficará visível apenas na alteração do produto.
+
 ## Informativo:
 
 No branch **master**, temos apenas o README e o script SQL do banco de dados MYSQL utilizado. 
@@ -27,7 +38,7 @@ Cada branch foi gerado a partir da última fase realizada em cada etapa e não d
 
 #### 1.2 Melhorando um pouco
 
-**branch:** v1.2
+**branch:** [v1.2](https://github.com/gjunior-tray/estoque/tree/v1.2)
 
 **Info:** Observando as funcionalidades e separando em **functions**.
 
