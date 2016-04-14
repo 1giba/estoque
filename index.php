@@ -1,6 +1,6 @@
 <?php
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+include 'verifica_acesso.php';
 ?>
 <html>
 	<head>
@@ -8,6 +8,13 @@ include '../verifica_acesso.php';
 	</head>
 	<body>
 		<h1>Controle de Estoque</h1>
+		<?php
+			// Disponibiliza as mensagens flash
+			include 'mensagem_flash.php';
+
+			// Exibe a mensagem flash, caso houver
+			alerta();
+		?>
 		<hr>
 		<li>
 			<?php if ($_SESSION['usuario']['perfil'] === 'admin') { ?>

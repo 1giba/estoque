@@ -14,7 +14,7 @@ $con = include '../abre_conexao.php';
 include '../operacoes_banco.php';
 
 // Captura usuário pelo id
-$usuario = selecionaUsuarioPorId($_GET['id']);
+$usuario = selecionaUsuarioPorId($con, $_GET['id']);
 
 // Caso não encontre o usuário, exibir mensagem
 if (empty($usuario)) {
@@ -36,8 +36,8 @@ if ($_POST) {
 		// Armazena a mensagem flash
 		flash('Usuário alterado com sucesso', 'sucesso');
 
-		// Redireciona para a listagem de usuários
-		header('Location: usuarios_listar.php');
+		// Redireciona para o menu principal
+		header('Location: ../index.php');
 		exit;
 	}
 }
