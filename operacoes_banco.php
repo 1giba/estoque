@@ -1,8 +1,8 @@
 <?php
-/*
+/*------------------------------------------------------------------------------------- 
  *
  * Operações com a tabela de produtos
- * 
+ *-------------------------------------------------------------------------------------  
  */
 
 /**
@@ -80,12 +80,22 @@ function atualizaEstoqueProduto($con, $id, $qtde)
 	return mysqli_query($con, "UPDATE produtos SET quantidade = quantidade + $qtde WHERE id = $id");
 }
 
-/*
+/*------------------------------------------------------------------------------------- 
  *
  * Operações com a tabela de usuarios
- * 
+ *-------------------------------------------------------------------------------------  
  */
 
+/**
+ * Exibe os usuários de acordo com os parâmetros
+ *
+ * @param mixed  $con
+ * @param string $campo
+ * @param string $palavra
+ * @param string $perfil
+ * @param string $ordenar
+ * @return array
+ */
 function selecionaUsuarios($con, $campo = '', $palavra = '', $perfil = '', $ordenar = '')
 {
 	$sql = "SELECT * FROM usuarios";
@@ -110,23 +120,58 @@ function selecionaUsuarios($con, $campo = '', $palavra = '', $perfil = '', $orde
 	return $usuarios;
 }
 
+/**
+ * Busca o usuário pelo id
+ *
+ * @param mixed  $con
+ * @param integer $id
+ * @return array
+ */
 function selecionaUsuarioPorId($con, $id)
 {
 	$qry = mysqli_query($con, 'SELECT * FROM usuarios WHERE id = ' . $id);
 	return mysqli_fetch_array($qry);
 }
 
+/**
+ * Busca o usuário pelo e-mail
+ *
+ * @param mixed  $con
+ * @param integer $id
+ * @return array
+ */
 function selecionaUsuarioPorEmail($con, $email)
 {
 	$qry = mysqli_query($con, "SELECT * FROM usuarios WHERE email = '$email'");
 	return mysqli_fetch_array($qry);
 }
 
+/**
+ * Insere o usuário
+ *
+ * @param mixed  $con
+ * @param string $nome
+ * @param string $email
+ * @param string $perfil
+ * @param string $senha
+ * @return boolean
+ */
 function insereUsuario($con, $nome, $email, $perfil, $senha)
 {
 	return mysqli_query($con, "INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('{$nome}', '{$email}', '{$senha}', '{$perfil}')");
 }
 
+/**
+ * Atualiza os dados do usuário
+ *
+ * @param mixed  $con
+ * @param integer $id
+ * @param string $nome
+ * @param string $email
+ * @param string $perfil
+ * @param string $senha
+ * @return boolean
+ */
 function atualizaUsuario($con, $id, $nome, $email, $perfil, $senha = '')
 {
 	$sql  = "UPDATE usuarios SET nome='$nome', email='$email', perfil='$perfil'";
@@ -137,17 +182,32 @@ function atualizaUsuario($con, $id, $nome, $email, $perfil, $senha = '')
 	return mysqli_query($con, $sql);
 }
 
+/**
+ * Atualiza a senha do usuário
+ *
+ * @param mixed  $con
+ * @param integer $id
+ * @param string $senha
+ * @return boolean
+ */
 function atualizaSenha($con, $id, $senha)
 {
 	return mysqli_query($con, "UPDATE usuarios SET senha='$senha' WHERE id=$id");
 }
 
-/*
+/*-------------------------------------------------------------------------------------
  *
  * Operações com a tabela de estoques
- * 
+ *------------------------------------------------------------------------------------- 
  */
 
+/**
+ * Busca a movimentação do estoque pelo id do produto
+ *
+ * @param mixed  $con
+ * @param integer $id
+ * @return array
+ */
 function selecionaMovimentoEstoqueDoProduto($con, $id)
 {
 	$estoques = [];

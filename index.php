@@ -1,8 +1,6 @@
 <?php
-	session_start();
-	if (empty($_SESSION['usuario'])) {
-		header("Location: usuarios/login.php");
-	}
+// Verifica se o usuário está logado
+include '../verifica_acesso.php';
 ?>
 <html>
 	<head>
