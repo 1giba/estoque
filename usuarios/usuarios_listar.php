@@ -1,15 +1,34 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
 
 // Permite apenas o perfil admin
-include '../somente_admin.php';
+if (!$acesso->isAdmin()) {
+	echo '<h1>Acesso não permitido</h1>';
+	echo '<p><a href="../index.php">Voltar</a></p>';
+	exit;
+}
+
+// Disponibiliza a classe
+include '../classes/Conexao.php';
+
+// Instancia a classe
+$conexao = new Conexao();
 
 // Captura a conexão aberta
-$con = include '../abre_conexao.php';
+$con = $conexao->getCon();
 
-// Disponibiliza as funções de operações com banco
-include '../operacoes_banco.php';
+// Disponibiliza a classe
+include '../classes/Usuario.php';
+
+// Instancia a classe
+$u = new Usuario($con);
 
 // Prepara os parametros da função
 $busca 		    = !empty($_GET['busca']) ? $_GET['busca'] : '';
@@ -18,7 +37,7 @@ $perfil         = !empty($_GET['perfil']) ? $_GET['perfil'] : '';
 $ordenar        = !empty($_GET['ordenar']) ? $_GET['ordenar'] : '';
 
 // Captura os usuários
-$usuarios = selecionaUsuarios($con, $busca, $palavraBuscada, $perfil, $ordenar);
+$usuarios = $u->selecionaUsuarios($busca, $palavraBuscada, $perfil, $ordenar);
 ?>
 <html>
 	<head>
@@ -27,11 +46,14 @@ $usuarios = selecionaUsuarios($con, $busca, $palavraBuscada, $perfil, $ordenar);
 	<body>
 		<h1>Listar Usuários</h1>
 		<?php 
-			// Disponibiliza as funções relacionadas às mensagens flash
-			include '../mensagem_flash.php';
+			// Disponibiliza a classe
+			include '../classes/Mensagem.php';
+
+			// Instancia a classe
+			$m = new Mensagem();
 
 			// Exibe mensagem flash se houver
-			echo alerta(); 
+			echo $m->alerta(); 
 		?>
 		<hr>
 		<form method="get" action="usuarios_listar.php">

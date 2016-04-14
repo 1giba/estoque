@@ -1,26 +1,45 @@
 <?php
 
-// Disponibiliza as funções relacionadas às mensagens flash
-include '../mensagem_flash.php';
+// Disponibiliza a classe
+include '../classes/Mensagem.php';
+
+// Instancia a classe
+$m = new Mensagem();
 
 // Se vierem os dados do post
 if ($_POST) {
-	// Captura a conexão aberta
-	$con = include '../abre_conexao.php';
+	// Disponibiliza a classe
+	include '../classes/Conexao.php';
 
-	// Disponibiliza as funções de operações com banco
-	include '../operacoes_banco.php';
+	// Instancia a classe
+	$conexao = new Conexao();
+
+	// Captura a conexão aberta
+	$con = $conexao->getCon();
+
+	// Disponibiliza a classe
+	include '../classes/Usuario.php';
+
+	// Instancia a classe
+	$u = new Usuario($con);
 
 	// Captura o usuário por e-mail
-	$usuario = selecionaUsuarioPorEmail($con, $_POST['email']);
+	$usuario = $u->selecionaUsuarioPorEmail($_POST['email']);
 	// Valida as senhas, cria alerta
 	if (empty($usuario) || $_POST['senha'] !== $usuario['senha']) {
 		// Armazena a mensagem flash
-		flash('Usuário/Senha inválidos!', 'erro');
+		$m->flash('Usuário/Senha inválidos!', 'erro');
 	// Senha ok!
 	} else {		
-		// Joga os dados do usuário na sessão
-		$_SESSION['usuario'] = $usuario;
+		// Disponibiliza a classe
+		include '../classes/Acesso.php';
+
+		// Instancia a classe
+		$acesso = new Acesso();
+
+		// Define o usuário logado
+		$acesso->setUsuario($usuario);
+
 		// Volta para o menu principal
 		header('Location: ../index.php');
 		exit;
@@ -35,7 +54,7 @@ if ($_POST) {
 		<h1>Acesso ao Sistema</h1>
 		<?php 
 			// Exibe mensagem flash se houver
-			echo alerta();
+			echo $m->alerta();
 		?>
 		<hr>
 		<form method="post" action="login.php">

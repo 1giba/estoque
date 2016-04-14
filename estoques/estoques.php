@@ -1,15 +1,32 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
+
+// Disponibiliza a classe
+include '../classes/Conexao.php';
+
+// Instancia a classe
+$conexao = new Conexao();
 
 // Captura a conexão aberta
-$con = include '../abre_conexao.php';
+$con = $conexao->getCon();
 
-// Disponibiliza as funções de operações com banco
-include '../operacoes_banco.php';
+// Disponibiliza as classes
+include '../classes/Produto.php';
+include '../classes/Estoque.php';
+
+// Instancia as classes
+$p = new Produto($con);
+$e = new Estoque($con);
 
 // Captura todos os produtos
-$produtos = selecionaTodosProdutos($con);
+$produtos = $p->selecionaTodosProdutos();
 
 // Inicializar a variável
 $alerta = '';
@@ -24,7 +41,7 @@ if ($_POST) {
 		}
 
 		// Se inserir com sucesso
-		if (insereEstoque($con, $_SESSION['usuario']['id'], $produto['id'], $_POST['produto-' . $produto['id']])) {
+		if ($e->insereEstoque($_SESSION['usuario']['id'], $produto['id'], $_POST['produto-' . $produto['id']])) {
 			// Exibir adição de produto em verde
 			if ($_POST['produto-' . $produto['id']] > 0) {
 				$alerta .= "<span style='color:green'>Produto {$produto['nome']}: +" . $_POST["produto-{$produto['id']}"] . "</span><br>";
@@ -34,7 +51,7 @@ if ($_POST) {
 			}
 
 			// Caso for atualizado com sucesso
-			if (atualizaEstoqueProduto($con, $produto['id'], $_POST['produto-' . $produto['id']])) {
+			if ($p->atualizaEstoqueProduto($produto['id'], $_POST['produto-' . $produto['id']])) {
 				// Criar mensagem de alerta
 				$alerta .= "<span style='color:blue'>Produto {$produto['nome']} alterado o estoque de {$produto['quantidade']} para " . ($produto['quantidade'] + $_POST['produto-' . $produto['id']]) . "</span><br>";
 				// Atualizar resultado de produtos que irá iterar no html

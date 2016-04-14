@@ -13,13 +13,6 @@ class Acesso
 	public function __construct()
 	{
 		session_start();
-
-		if (!$this->isLogado()) {
-			$_SESSION['mensagem'] = 'Você deve estar logado no sistema';
-
-			header("Location: ../usuarios/login.php");
-			exit;
-		}
 	}
 
 	/**
@@ -27,10 +20,16 @@ class Acesso
 	 *
 	 * @return boolean
 	 */
-	public function isLogado()
+	public function verificaLogin()
 	{		
 		if (empty($_SESSION['usuario'])) {
-			return false;
+			require_once 'Mensagem.php';
+
+			$mensagem = new Mensagem();
+			$mensagem->flash('Você deve estar logado no sistema', 'erro');
+
+			header("Location: ../usuarios/login.php");
+			exit;
 		}
 		return true;
 	}

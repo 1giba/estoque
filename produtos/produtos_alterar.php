@@ -1,20 +1,37 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
 
 // Caso não passe na URL o id do produto, gerar exceção
 if (empty($_GET['id'])) {
 	throw new Exception('Não possui id de alteração');
 }
 
-// Captura a conexão aberta
-$con = include '../abre_conexao.php';
+// Disponibiliza a classe
+include '../classes/Conexao.php';
 
-// Disponibiliza as funções de operações com banco
-include '../operacoes_banco.php';
+// Instancia a classe
+$conexao = new Conexao();
+
+// Captura a conexão aberta
+$con = $conexao->getCon();
+
+// Disponibiliza as classes
+include '../classes/Produto.php';
+include '../classes/Estoque.php';
+
+// Instancia as classes
+$p = new Produto($con);
+$e = new Estoque($con);
 
 // Captura o produto pelo ID
-$produto = selecionaProdutoPorId($con, $_GET['id']);
+$produto = $p->selecionaProdutoPorId($_GET['id']);
 
 // Caso não encontre o produto, exibir mensagem
 if (empty($produto)) {
@@ -25,12 +42,15 @@ if (empty($produto)) {
 // Se vierem dados do post...
 if ($_POST) {
 	// Atualizar o nome do produto
-	if (atualizaNomeDoProduto($con, $produto['id'], $_POST['nome'])) {
-		// Disponibiliza as funções relacionadas às mensagens flash
-		include '../mensagem_flash.php';
+	if ($p->atualizaNomeDoProduto($produto['id'], $_POST['nome'])) {
+		// Disponbiliza a classe
+		include '../classes/Mensagem.php';
+
+		// Instancia a classe
+		$m = new Mensagem();
 
 		// Armazena a mensagem flash
-		flash('Produto alterado com sucesso', 'sucesso');
+		$m->flash('Produto alterado com sucesso', 'sucesso');
 		
 		// Redirecionar para a lista e exibir mensagem
 		header('Location: produtos_listar.php');
@@ -39,7 +59,7 @@ if ($_POST) {
 }
 
 // Captura a movimentação do estoque do produto
-$estoques = selecionaMovimentoEstoqueDoProduto($con, $produto['id']);
+$estoques = $e->selecionaMovimentoEstoqueDoProduto($produto['id']);
 ?>
 <html>
 	<head>

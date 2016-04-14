@@ -1,22 +1,40 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
 
 // Se vierem os dados de post
 if ($_POST) {
-	// Captura a conexão aberta
-	$con = include '../abre_conexao.php';
+	// Disponibiliza a classe
+	include '../classes/Conexao.php';
 
-	// Disponibiliza as funções de operações com banco
-	include '../operacoes_banco.php';
+	// Instancia a classe
+	$conexao = new Conexao();
+
+	// Captura a conexão aberta
+	$con = $conexao->getCon();
+
+	// Disponibiliza a classe
+	include '../classes/Produto.php';
+
+	// Instancia a classe
+	$p = new Produto($con);
 
 	// Caso o produto seja incluido com sucesso, criar alerta e redirecionar para a lista
-	if (insereProduto($con, $_POST['nome'])) {
-		// Disponibiliza as funções relacionadas às mensagens flash
-		include '../mensagem_flash.php';
-		
+	if ($p->insereProduto($_POST['nome'])) {
+		// Disponbiliza a classe
+		include '../classes/Mensagem.php';
+
+		// Instancia a classe
+		$m = new Mensagem();
+
 		// Armazena a mensagem flash
-		flash('Produto inserido com sucesso', 'sucesso');
+		$m->flash('Produto inserido com sucesso', 'sucesso');
 
 		// Redireciona para a listagem de produtos
 		header("Location: produtos_listar.php");

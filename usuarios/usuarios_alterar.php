@@ -1,23 +1,42 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
 
 // Permite apenas o perfil admin
-include '../somente_admin.php';
+if (!$acesso->isAdmin()) {
+	echo '<h1>Acesso não permitido</h1>';
+	echo '<p><a href="../index.php">Voltar</a></p>';
+	exit;
+}
 
 // Caso não passe na URL o id do usuário, gerar um erro
 if (empty($_GET['id'])) {
 	die('Você deve informar o id do usuario');
 }
 
-// Captura a conexão aberta
-$con = include '../abre_conexao.php';
+// Disponibiliza a classe
+include '../classes/Conexao.php';
 
-// Disponibiliza as funções de operações com banco
-include '../operacoes_banco.php';
+// Instancia a classe
+$conexao = new Conexao();
+
+// Captura a conexão aberta
+$con = $conexao->getCon();
+
+// Disponibiliza a classe
+include '../classes/Usuario.php';
+
+// Instancia a classe
+$u = new Usuario($con);
 
 // Captura o usuário por id
-$usuario = selecionaUsuarioPorId($con, $_GET['id']);
+$usuario = $u->selecionaUsuarioPorId($_GET['id']);
 
 // Caso não encontre o usuário, exibir mensagem
 if (empty($usuario)) {
@@ -25,8 +44,11 @@ if (empty($usuario)) {
 	exit;
 }
 
-// Disponibiliza as funções relacionadas às mensagens flash
-include '../mensagem_flash.php';
+// Disponibiliza a classe
+include '../classes/Mensagem.php';
+
+// Instancia a classe
+$m = new Mensagem();
 
 // Se vierem variáveis do post...
 if ($_POST) {
@@ -38,7 +60,7 @@ if ($_POST) {
 		$usuario['email'] = $_POST['email'];
 
 		// verifica se o e-mail já não está cadastrado
-		$emailJaCadastrado = !empty(selecionaUsuarioPorEmail($con, $usuario['email']));
+		$emailJaCadastrado = !empty($u->selecionaUsuarioPorEmail($usuario['email']));
 	}
 
 	// Atualizam os dados
@@ -48,18 +70,18 @@ if ($_POST) {
 	// Caso o e-mail já esteja sendo utilizado, criar alerta
 	if ($emailJaCadastrado) {
 		// Armazena a mensagem flash
-		flash('E-mail já utilizado, adicione outro.', 'erro');
+		$m->flash('E-mail já utilizado, adicione outro.', 'erro');
 	// Senão
 	} else {
 		// Valida as senhas
 		if ($_POST['senha'] != $_POST['senha_confirmacao']) {
 			// Armazena a mensagem flash
-			flash('Senhas não conferem!', 'erro');
+			$m->flash('Senhas não conferem!', 'erro');
 		// Caso a atualização for sucesso, redirecionar para a lista com mensagem de sucesso
-		} elseif (atualizaUsuario($con, $usuario['id'], $ususario['nome'], $usuario['email'], $usuario['perfil'], !empty($_POST['senha']) ? $_POST['senha'] : '')) {
+		} elseif ($u->atualizaUsuario($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['perfil'], !empty($_POST['senha']) ? $_POST['senha'] : '')) {
 
 			// Armazena a mensagem flash
-			flash('Usuário alterado com sucesso!', 'sucesso');
+			$m->flash('Usuário alterado com sucesso!', 'sucesso');
 
 			// Redireciona para a listagem de usuários
 			header('Location: usuarios_listar.php');
@@ -77,7 +99,7 @@ if ($_POST) {
 		<h3>Usuário #<?php echo $usuario['id']; ?></h3>
 		<?php 
 			// Exibe mensagem flash se houver
-			echo alerta(); 
+			echo $m->alerta(); 
 		?>
 		<hr>
 		<form method="post" action="usuarios_alterar.php?id=<?php echo $usuario['id']; ?>">

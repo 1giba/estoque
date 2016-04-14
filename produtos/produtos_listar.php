@@ -1,15 +1,30 @@
 <?php
+// Disponibiliza a classe
+include '../classes/Acesso.php';
+
+// Instancia a classe
+$acesso = new Acesso();
+
 // Verifica se o usuário está logado
-include '../verifica_acesso.php';
+$acesso->verificaLogin();
+
+// Disponibiliza a classe
+include '../classes/Conexao.php';
+
+// Instancia a classe
+$conexao = new Conexao();
 
 // Captura a conexão aberta
-$con = include '../abre_conexao.php';
+$con = $conexao->getCon();
 
-// Disponibiliza as funções de operações com banco
-include '../operacoes_banco.php';
+// Disponibiliza a classe
+include '../classes/Produto.php';
+
+// Instancia a classe
+$p = new Produto($con);
 
 // Captura os produtos
-$produtos = selecionaTodosProdutos($con, !empty($_GET['nome']) ? $_GET['nome'] : '');
+$produtos = $p->selecionaTodosProdutos(!empty($_GET['nome']) ? $_GET['nome'] : '');
 ?>
 <html>
 	<head>
@@ -18,11 +33,14 @@ $produtos = selecionaTodosProdutos($con, !empty($_GET['nome']) ? $_GET['nome'] :
 	<body>
 		<h1>Listar Produtos</h1>
 		<?php 
-			// Disponibiliza as funções relacionadas às mensagens flash
-			include '../mensagem_flash.php';
+			// Disponibiliza a classe
+			include '../classes/Mensagem.php';
+
+			// Instancia a classe
+			$m = new Mensagem();
 
 			// Exibe mensagem flash se houver
-			echo alerta();
+			echo $m->alerta();
 		?>
 		<hr>
 		<form method="get" action="produtos_listar.php">
