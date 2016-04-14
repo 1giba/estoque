@@ -8,4 +8,6 @@ Em resumo, vamos retirar as operações de banco, as validações de acesso e as
 * Na listagem, inserção e alteração de usuários somente o Administrador possui o acesso. Nestes arquivos já possuímos a validação, apenas criamos o **somente_admin.php** para centralizar a validação;
 * Também criamos **mensagem_flash.php**, para tratar as mensagens flash geradas de erros ou sucesso.
 
+[Veja as diferenças com a versão anterior](https://github.com/gjunior-tray/estoque/compare/v1.1...v1.2?expand=1)
+
 [Voltar para a **master**](https://github.com/gjunior-tray/estoque/tree/master)
