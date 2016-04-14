@@ -1,12 +1,81 @@
-# v2.1 - Orientação à Objetos
+# v2.2 - Herança
 
-Em resumo, pegamos os arquivos que estavam na raiz do projeto e transformamos em classes:
+Olhando as classes que precisam da conexão, podemos perceber que todas elas tem o mesmo atributo e o mesmo método construtor. 
 
-* **abre_conexao.php** virou **./classes/Conexao.php**;
-* **operacoes_banco.php** gerou as classes: **./classes/Estoque.php**, **./classes/Produto.php** e **./classes/Usuario.php**;
-* **verifica_acesso.php**, **somente_admin.php** e tudo que está tratando com a sessão do usuário logado espalhada pelo código geraram a classe **./classes/Acesso.php**;
-* E por fim, **mensagem_flash.php** gerou a classe **./classes/Mensagem.php**.
+## Estoque.php
 
-[Veja as diferenças com a versão anterior](https://github.com/gjunior-tray/estoque/compare/v1.2...v2.1?expand=1)
+```php
+class Estoque
+{
+	/**
+	 * @var mixed Objeto de Conexão gerado para o MySQL
+	 */
+	protected $con;
+
+	/**
+	 * Método construtor
+	 *
+	 * @param mixed $con
+	 */
+	public function __construct($con)
+	{
+		$this->con = $con;
+	}
+
+	/****************************/
+}
+```
+
+## Produto.php
+
+```php
+class Produto
+{
+	/**
+	 * @var mixed Objeto de Conexão gerado para o MySQL
+	 */
+	protected $con;
+
+	/**
+	 * Método construtor
+	 *
+	 * @param mixed $con
+	 */
+	public function __construct($con)
+	{
+		$this->con = $con;
+	}
+
+	/****************************/
+}
+```
+
+## Usuario.php
+
+```php
+class Usuario
+{
+	/**
+	 * @var mixed Objeto de Conexão gerado para o MySQL
+	 */
+	protected $con;
+
+	/**
+	 * Método construtor
+	 *
+	 * @param mixed $con
+	 */
+	public function __construct($con)
+	{
+		$this->con = $con;
+	}
+
+	/****************************/
+}
+```
+
+O que é comum devemos jogar numa classe Pai e herdar nas filhas, criando a classe **Base.php**.
+
+[Veja as diferenças com a versão anterior](https://github.com/gjunior-tray/estoque/compare/v2.1...v2.2?expand=1)
 
 [Voltar para a **master**](https://github.com/gjunior-tray/estoque/tree/master)

@@ -1,25 +1,14 @@
 <?php
+
+// Devemos usar require_once pois se num mesmo arquivo chamar Estoque e Produto, por exemplo. Vai dar erro de redeclared, ou seja, vai incluir 2 vezes Base.php.
+require_once 'Base.php';
+
 /**
  * Classe responsável pelo Produto
  *
  */
-class Produto
+class Produto extends Base
 {
-	/**
-	 * @var mixed Objeto de Conexão gerado para o MySQL
-	 */
-	protected $con;
-
-	/**
-	 * Método construtor
-	 *
-	 * @param mixed $con
-	 */
-	public function __construct($con)
-	{
-		$this->con = $con;
-	}
-
 	/**
 	 * Exibe todos os produtos ou com a condição de nome
 	 *
