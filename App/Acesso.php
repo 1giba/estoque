@@ -23,13 +23,7 @@ class Acesso
 	public function verificaLogin()
 	{		
 		if (empty($_SESSION['usuario'])) {
-			require_once 'Mensagem.php';
-
-			$mensagem = new Mensagem();
-			$mensagem->flash('Você deve estar logado no sistema', 'erro');
-
-			header("Location: ../usuarios/login.php");
-			exit;
+			return false;
 		}
 		return true;
 	}

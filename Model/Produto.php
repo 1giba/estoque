@@ -1,7 +1,7 @@
 <?php
 
 // Devemos usar require_once pois se num mesmo arquivo chamar Estoque e Produto, por exemplo. Vai dar erro de redeclared, ou seja, vai incluir 2 vezes Base.php.
-require_once 'Base.php';
+require_once DIRETORIO_MODELS . '/Base.php';
 
 /**
  * Classe responsável pelo Produto

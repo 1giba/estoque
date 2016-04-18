@@ -1,4 +1,4 @@
-# v2.2 - Herança
+# v3.1
 
 Olhando as classes que precisam da conexão, podemos perceber que todas elas tem o mesmo atributo e o mesmo método construtor. 
 
