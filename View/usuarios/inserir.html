@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Usuários :: inserir</title>
+	</head>
+	<body>
+		<h1>Novo Usuário</h1>
+		{{ flash }}
+		<hr>
+		<form method="post" action="{{ action }}">
+			<label>Nome:</label>
+			<input type="text" name="nome" length="100" required="required" value="{{ nome }}"><br>
+			<label>E-mail:</label>
+			<input type="text" name="email" length="255" required="required" value="{{ email }}"><br>
+			<label>Informe a senha:</label>
+			<input type="password" name="senha" length="255" required="required"><br>
+			<label>Confirme a senha:</label>
+			<input type="password" name="senha_confirmacao" length="255" required="required"><br>
+			<label>Perfil:</label>
+			<select name="perfil">
+				<option value="admin" {% if perfil == 'admin' %} selected="selected" {% endif %}>Administrador</option>
+				<option value="user"  {% if perfil == 'user' %} selected="selected" {% endif %}>Funcionário</option>
+			</select><hr>
+			<input type="submit" value="Inserir">
+			<input type="button" value="Cancelar" onclick="javascript:window.location='{{ urlVoltar }}'">
+		</form>
+	</body>
+</html>

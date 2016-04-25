@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Controle de Estoque</title>
+	</head>
+	<body>
+		<h1>Controle de Estoque</h1>
+		{{ flash }}
+		<hr>
+		<li>
+			{% if isAdmin %}
+				<ul><a href="{{ urlUsuarioInserir }}">Cadastrar Usuário</a></ul>
+				<ul><a href="{{ urlUsuarioListar }}">Listar Usuários</a></ul>
+			{% endif %}
+			<ul><a href="{{ urlAlterarSenha }}">Alterar senha</a></ul>
+			<ul><a href="{{ urlProdutoInserir }}">Cadastrar Produto</a></ul>
+			<ul><a href="{{ urlProdutoListar }}">Listar Produtos</a></ul>
+			<ul><a href="{{ urlEstoque }}">Controle de Estoque</a></ul>
+			<ul><a href="{{ urlLogout }}">Sair</a></ul>
+		</li>
+	</body>
+</html>

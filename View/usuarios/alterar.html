@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title>Usuários :: Alterar</title>
+	</head>
+	<body>
+		<h1>Alterar Usuário</h1>
+		<h3>Usuário #{{ usuario.id }}</h3>
+		{{ flash }}
+		<hr>
+		<form method="post" action="{{ action }}">
+			<input type="hidden" name="id" value="{{ usuario.id }}">
+			<label>Nome:</label>
+			<input type="text" name="nome" length="100" required="required" value="{{ usuario.nome }}"><br>
+			<label>E-mail:</label>
+			<input type="text" name="email" length="255" required="required" value="{{ usuario.email }}"><br>
+			<label>Informe a senha:</label>
+			<input type="password" name="senha" length="255"><br>
+			<label>Confirme a senha:</label>
+			<input type="password" name="senha_confirmacao" length="255"><br>
+			<label>Perfil:</label>
+			<select name="perfil">
+				<option value="admin" {% if usuario.perfil == 'admin' %} selected="selected" {% endif %}>Administrador</option>
+				<option value="user"  {% if usuario.perfil == 'user' %} selected="selected" {% endif %}>Funcionário</option>
+			</select><hr>
+			<input type="submit" value="Alterar">
+			<input type="button" value="Cancelar" onclick="javascript:window.location='{{ urlVoltar }}'">
+		</form>
+	</body>
+</html>

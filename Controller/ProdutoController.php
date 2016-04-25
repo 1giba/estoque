@@ -24,7 +24,15 @@ class ProdutoController extends BaseController
 		$produtos = $this->produto->selecionaTodosProdutos(!empty($_GET['nome']) ? $_GET['nome'] : '');
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/produtos/listar.php';
+		echo $this->view->render('produtos/listar.html', [
+			'flash'      		=> $this->mensagem->alerta(),
+			'action'     		=> $this->helper->url('ProdutoController@listar'),
+			'hiddenTags' 		=> $this->helper->hiddenTags('ProdutoController@listar'),
+			'urlProdutoInserir' => $this->helper->url('ProdutoController@inserir'),
+			'urlVoltar' 		=> $this->helper->url('HomeController@index'),
+			'produtos'			=> $produtos,
+			'urlBaseProduto'    => $this->helper->url('ProdutoController@alterar'),
+		]);
 	}
 
 	/**
@@ -48,7 +56,10 @@ class ProdutoController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/produtos/inserir.php';
+		echo $this->view->render('produtos/inserir.html', [
+			'action'	=> $this->helper->url('ProdutoController@inserir'),
+			'urlVoltar' => $this->helper->url('HomeController@index'),
+		]);
 	}
 
 	/**
@@ -86,6 +97,13 @@ class ProdutoController extends BaseController
 		$estoques = $this->estoque->selecionaMovimentoEstoqueDoProduto($produto['id']);
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/produtos/alterar.php';
+		echo $this->view->render('produtos/alterar.html', [
+			'action'	=> $this->helper->url('ProdutoController@alterar', [
+				'id' => $produto['id'],
+			]),
+			'produto'   => $produto,
+			'estoques'  => $estoques,
+			'urlVoltar' => $this->helper->url('HomeController@index'),
+		]);
 	}
 }

@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>Estoques :: Controle</title>
+	</head>
+	<body>
+		<h1>Controle de Estoque</h1>
+		{% if alerta %}
+			<h3>{{ alerta | raw }}</h3>
+		{% endif %}
+		<hr>
+		<form method="post" action="{{ action }}">	
+			<table border="1">
+				<tr>
+					<td>Id</td>
+					<td>Produto</td>
+					<td>Estoque Atual</td>
+					<td>+/-</td>
+				<tr>
+				{% for produto in produtos %}
+				<tr>
+					<td>{{ produto.id }}</td>
+					<td>{{ produto.nome }}</td>
+					<td>{{ produto.quantidade }}</td>
+					<td><input type="text" name="produto-{{ produto.id }}" value="0"></td>
+				</tr>
+				{% endfor %}
+			</table>
+			<hr>
+			<input type="submit" value="Gravar">
+			<input type="button" value="Cancelar" onclick="javascript:window.location='{{ urlVoltar }}'">
+		</form>		
+	</body>
+</html>

@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<title>Usuários :: Listar</title>
+	</head>
+	<body>
+		<h1>Listar Usuários</h1>
+		{{ flash }}
+		<hr>
+		<form method="get" action="{{ action }}">
+			{{ hiddenTags | raw }}
+			<select name="busca">
+				<option value="nome">Procurar por Nome</option>
+				<option value="email">Procurar por E-mail</option>
+			</select>
+			<input type="text" name="palavra_buscada">
+			<label>Perfil</label>
+			<select name="perfil">
+				<option value="">Todos</option>
+				<option value="admin">Admin</option>
+				<option value="user">Funcionário</option>
+			</select>
+			<label>Ordenar por</label>
+			<select name="ordenar">
+				<option value="id">Id</option>
+				<option value="nome">Nome</option>
+				<option value="email">E-mail</option>
+			</select>			
+			<input type="submit" value="Buscar">
+			<input type="reset" value="Limpar">
+		</form>
+		<hr>
+		<p><a href="{{ urlUsuarioInserir }}">Inserir Usuário</a>&nbsp;<a href="{{ urlVoltar }}">Voltar</a></p>
+		<table border="1">
+			<tr>
+				<td>Id</td>
+				<td>Usuário</td>
+				<td>E-mail</td>
+				<td>Perfil</td>
+				<td>Ações</td>
+			<tr>
+			{% for usuario in usuarios %}
+				<tr>
+					<td>{{ usuario.id }}</td>
+					<td>{{ usuario.nome }}</td>
+					<td>{{ usuario.email }}</td>
+					<td>
+						{% if usuario.perfil == 'admin' %}
+							Administrador
+						{% else %}
+							Funcionário
+						{% endif %}
+					</td>
+					<td><a href="{{ urlBaseUsuario }}&id={{ usuario.id }}">Alterar</a></td>
+				</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

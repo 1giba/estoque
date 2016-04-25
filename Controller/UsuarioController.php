@@ -37,7 +37,15 @@ class UsuarioController extends BaseController
 		$usuarios = $this->usuario->selecionaUsuarios($busca, $palavraBuscada, $perfil, $ordenar);
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/usuarios/listar.php';
+		echo $this->view->render('usuarios/listar.html', [
+			'flash'   			=> $this->mensagem->alerta(),
+			'action'  			=> $this->helper->url('UsuarioController@listar'),
+			'hiddenTags' 		=> $this->helper->hiddenTags('UsuarioController@listar'),
+			'usuarios'			=> $usuarios,
+			'urlBaseUsuario'    => $this->helper->url('UsuarioController@alterar'),
+			'urlUsuarioInserir' => $this->helper->url('UsuarioController@inserir'),
+			'urlVoltar' 		=> $this->helper->url('HomeController@index'),
+		]);
 	}
 
 	/**
@@ -94,7 +102,14 @@ class UsuarioController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/usuarios/inserir.php';
+		echo $this->view->render('usuarios/inserir.html', [
+			'flash'   	=> $this->mensagem->alerta(),
+			'action'  	=> $this->helper->url('UsuarioController@inserir'),
+			'nome' 	    => $nome,
+			'email'	    => $email,
+			'perfil'    => $perfil,
+			'urlVoltar' => $this->helper->url('UsuarioController@listar'),
+		]);
 	}
 
 	/**
@@ -160,7 +175,12 @@ class UsuarioController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/usuarios/alterar.php';
+		echo $this->view->render('usuarios/alterar.html', [
+			'flash'   	=> $this->mensagem->alerta(),
+			'action'  	=> $this->helper->url('UsuarioController@alterar', ['id' => $usuario['id']]),
+			'usuario' 	=> $usuario,
+			'urlVoltar' => $this->helper->url('UsuarioController@listar'),
+		]);
 	}
 
 	/**
@@ -202,7 +222,12 @@ class UsuarioController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/usuarios/alterar_senha.php';
+		echo $this->view->render('usuarios/alterar_senha.html', [
+			'flash'   	=> $this->mensagem->alerta(),
+			'action'  	=> $this->helper->url('UsuarioController@alterarSenha', ['id' => $usuario['id']]),
+			'usuario' 	=> $usuario,
+			'urlVoltar' => $this->helper->url('HomeController@index'),
+		]);
 	}
 
 	/**
@@ -230,7 +255,10 @@ class UsuarioController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/usuarios/login.php';
+		echo $this->view->render('usuarios/login.html', [
+			'flash'  => $this->mensagem->alerta(),
+			'action' => $this->helper->url('UsuarioController@login'),
+		]);
 	}
 
 	/**

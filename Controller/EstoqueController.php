@@ -53,6 +53,11 @@ class EstoqueController extends BaseController
 		}
 
 		// Adiciona a view
-		include DIRETORIO_VIEWS . '/estoques/index.php';
+		echo $this->view->render('estoques/index.html', [
+			'alerta'    => $alerta,
+			'action'    => $this->helper->url('EstoqueController@index'),
+			'produtos'  => $produtos,
+			'urlVoltar' => $this->helper->url('HomeController@index')
+		]);
 	}
 }

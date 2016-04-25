@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Produtos :: Listar</title>
+	</head>
+	<body>
+		<h1>Listar Produtos</h1>
+		{{ flash }}
+		<hr>
+		<form method="get" action="{{ action }}">
+			{{ hiddenTags | raw }}
+			<label>Procurar por nome:</label>
+			<input type="text" name="nome" length="100">
+			<input type="submit" value="Buscar">
+			<input type="reset" value="Limpar">			
+		</form>
+		<hr>
+		<p><a href="{{ urlProdutoInserir }}">Inserir Produto</a>&nbsp;<a href="{{ urlVoltar }}">Voltar</a></p>
+		<table border="1">
+			<tr>
+				<td>Id</td>
+				<td>Produto</td>
+				<td>Quantidade</td>
+				<td>Ações</td>
+			<tr>
+			{% for produto in produtos %}
+				<tr>
+					<td>{{ produto.id }}</td>
+					<td>{{ produto.nome }}</td>
+					<td>{{ produto.quantidade }}</td>
+					<td><a href="{{ urlBaseProduto }}&id={{ produto.id }}">Alterar</a></td>
+				</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

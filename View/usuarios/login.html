@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Controle de Estoque</title>
+	</head>
+	<body>
+		<h1>Acesso ao Sistema</h1>
+		{{ flash }}
+		<hr>
+		<form method="post" action="{{ action }}">
+			<label>Informe o e-mail:</label>
+			<input type="email" name="email" length="255" required="required"><br>
+			<label>Informe a senha:</label>
+			<input type="password" name="senha" length="255" required="required"><hr>
+			<input type="submit" value="Login">
+		</form>
+	</body>
+</html>

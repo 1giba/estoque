@@ -4,6 +4,7 @@ require_once DIRETORIO_APP . '/Acesso.php';
 require_once DIRETORIO_APP . '/Conexao.php';
 require_once DIRETORIO_APP . '/Mensagem.php';
 require_once DIRETORIO_APP . '/Helper.php';
+require_once DIRETORIO_APP . '/View.php';
 
 class BaseController
 {
@@ -38,6 +39,11 @@ class BaseController
 	protected $availableModels = [];
 
 	/**
+	 * @var \App\View
+	 */
+	protected $view;
+
+	/**
 	 * Método construtor
 	 *
 	 * @return void
@@ -46,7 +52,8 @@ class BaseController
 	{
 		$this->acesso    = new Acesso();
 		$this->mensagem  = new Mensagem();
-		$this->helper    = new Helper();		
+		$this->helper    = new Helper();	
+		$this->view      = new View();	
 
 		// Verificar se o usuário está logado
 		if ($validarLogin && !$this->acesso->verificaLogin()) {

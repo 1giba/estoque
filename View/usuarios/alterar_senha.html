@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Usuários :: Alterar Senha</title>
+	</head>
+	<body>
+		<h1>Alterar Senha</h1>
+		<h3>Usuário #{{ usuario.nome }} - {{ usuario.email }} [ {{ usuario.perfil }} ]</h3>
+		{{ flash }}
+		<hr>
+		<form method="post" action="{{ action }}">
+			<label>Informe a senha:</label>
+			<input type="password" name="senha" length="255" required="required"><br>
+			<label>Confirme a senha:</label>
+			<input type="password" name="senha_confirmacao" length="255" required="required"><hr>
+			<input type="submit" value="Alterar Senha">
+			<input type="button" value="Cancelar" onclick="javascript:window.location='{{ urlVoltar }}'">
+		</form>
+	</body>
+</html>
