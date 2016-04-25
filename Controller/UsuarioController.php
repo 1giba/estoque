@@ -1,6 +1,6 @@
 <?php 
 
-require_once DIRETORIO_CONTROLLERS . '/BaseController.php';
+namespace Foo\Controller;
 
 /**
  * Controller do Usuário

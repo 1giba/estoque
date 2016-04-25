@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\App;
+
 /**
  * Classe responsável pelas mensagens flash
  *

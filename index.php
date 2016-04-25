@@ -5,7 +5,7 @@
  */
 include 'bootstrap.php';
 
-require_once DIRETORIO_APP . '/Aplicacao.php';
+use Foo\App\Aplicacao;
 
 $aplicacao = new Aplicacao();
 

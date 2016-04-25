@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\App;
+
 /**
  * Classe responsável por montar as views da aplicação
  *
@@ -17,9 +20,9 @@ class View
 	public function __construct()
 	{
 		require_once DIRETORIO_VENDORS . '/Twig-1.x/lib/Twig/Autoloader.php';
-		Twig_Autoloader::register();
-		$loader = new Twig_Loader_Filesystem(DIRETORIO_VIEWS);
-		$this->templateEngine = new Twig_Environment($loader);
+		\Twig_Autoloader::register();
+		$loader = new \Twig_Loader_Filesystem(DIRETORIO_VIEWS);
+		$this->templateEngine = new \Twig_Environment($loader);
 	}
 
 	/**

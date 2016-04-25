@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<h1>Novo Usuário</h1>
-		{{ flash }}
+		{{ flash | raw }}
 		<hr>
 		<form method="post" action="{{ action }}">
 			<label>Nome:</label>

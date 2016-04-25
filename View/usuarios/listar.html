@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<h1>Listar Usuários</h1>
-		{{ flash }}
+		{{ flash | raw}}
 		<hr>
 		<form method="get" action="{{ action }}">
 			{{ hiddenTags | raw }}

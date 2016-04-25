@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\App;
+
 /**
  * Classe responsável por implementar os métodos do Controller 
  *
@@ -42,7 +45,10 @@ class Aplicacao
 		$this->parametros = $requisicao;
 		
 		require_once DIRETORIO_CONTROLLERS . '/' . $this->controlador . '.php';
-		$objeto = new $this->controlador($this->metodo !== 'login');
+
+		$controlador = '\\Foo\\Controller\\' . $this->controlador;
+
+		$objeto = new $controlador($this->metodo !== 'login');
 		return $objeto->{$this->metodo}($this->parametros);
 	}
 }

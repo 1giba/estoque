@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\App;
+
 /**
  * Classe responsável pela conexão com o banco de dados
  *

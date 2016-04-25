@@ -1,10 +1,12 @@
 <?php
 
-require_once DIRETORIO_APP . '/Acesso.php';
-require_once DIRETORIO_APP . '/Conexao.php';
-require_once DIRETORIO_APP . '/Mensagem.php';
-require_once DIRETORIO_APP . '/Helper.php';
-require_once DIRETORIO_APP . '/View.php';
+namespace Foo\Controller;
+
+use Foo\App\Acesso;
+use Foo\App\Mensagem;
+use Foo\App\Helper;
+use Foo\App\View;
+use Foo\App\Conexao;
 
 class BaseController
 {
@@ -66,8 +68,8 @@ class BaseController
 		// Carregar as models dinamicamente
 		foreach ($this->models as $model) {
 			if (!array_key_exists(strtolower($model), $this->availableModels)) {
-				require_once DIRETORIO_MODELS . '/' . $model . '.php';
-				$this->availableModels[strtolower($model)] = new $model($this->conexao->getCon());
+				$class = '\\Foo\\Model\\' . $model;
+				$this->availableModels[strtolower($model)] = new $class($this->conexao->getCon());
 			}			
 		}
 	}

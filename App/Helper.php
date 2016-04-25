@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\App;
+
 /** 
  * Classe responsável por montar as rotas da aplicação
  *

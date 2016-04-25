@@ -1,4 +1,7 @@
 <?php
+
+namespace Foo\Model;
+
 /**
  * Classe que generaliza Estoque, Produto e Usuário
  *
