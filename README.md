@@ -1,81 +1,40 @@
-# v3.1
+# v3.1 - MVC
 
-Olhando as classes que precisam da conexão, podemos perceber que todas elas tem o mesmo atributo e o mesmo método construtor. 
+Separando a aplicação em MVC, vamos colocar como exemplo o login.php.
 
-## Estoque.php
+Primeiramente devemos criar 3 diretórios: Model, View e Controller, e assim separar nossa aplicação.
 
-```php
-class Estoque
-{
-	/**
-	 * @var mixed Objeto de Conexão gerado para o MySQL
-	 */
-	protected $con;
+### Model
 
-	/**
-	 * Método construtor
-	 *
-	 * @param mixed $con
-	 */
-	public function __construct($con)
-	{
-		$this->con = $con;
-	}
+No exemplo de login, vamos mover a classe Usuario.php para o diretório de Models.
 
-	/****************************/
-}
-```
+A classe [**Usuario**](https://github.com/gjunior-tray/estoque/blob/v2.2/usuarios/login.php#L24) vira **model**.
 
-## Produto.php
+### View
 
-```php
-class Produto
-{
-	/**
-	 * @var mixed Objeto de Conexão gerado para o MySQL
-	 */
-	protected $con;
+A view basta copiar todo o [html](https://github.com/gjunior-tray/estoque/blob/v2.2/usuarios/login.php#L49-L68) e jogar no seu diretório correspondente. Ficará assim: https://github.com/gjunior-tray/estoque/blob/v3.1/View/usuarios/login.php.
 
-	/**
-	 * Método construtor
-	 *
-	 * @param mixed $con
-	 */
-	public function __construct($con)
-	{
-		$this->con = $con;
-	}
+### Controller
 
-	/****************************/
-}
-```
+Fará as chamadas, validações e incluirá a view. Ficará assim: 
+https://github.com/gjunior-tray/estoque/blob/v3.1/Controller/UsuarioController.php
 
-## Usuario.php
+### Finalizando
 
-```php
-class Usuario
-{
-	/**
-	 * @var mixed Objeto de Conexão gerado para o MySQL
-	 */
-	protected $con;
+Neste exemplo, foi criado a pasta **App**, onde temos:
 
-	/**
-	 * Método construtor
-	 *
-	 * @param mixed $con
-	 */
-	public function __construct($con)
-	{
-		$this->con = $con;
-	}
+* Aplicacao.php -> starta a nossa aplicação
+* Acesso.php -> trata dos acessos (origem: https://github.com/gjunior-tray/estoque/blob/v2.2/classes/Acesso.php)
+* Conexao.php -> trata da conexão (origem: https://github.com/gjunior-tray/estoque/blob/v2.2/classes/Conexao.php)
+* Helper.php -> monta as novas urls
+* Mensagem.php -> controla as mensagens flash (origem: https://github.com/gjunior-tray/estoque/blob/v2.2/classes/Mensagem.php)
 
-	/****************************/
-}
-```
+Toda a aplicação roda em cima do [index.php](https://github.com/gjunior-tray/estoque/blob/v3.1/index.php) da raiz do projeto. É responsável por chamar todos os métodos dos controllers.
 
-O que é comum devemos jogar numa classe Pai e herdar nas filhas, criando a classe **Base.php**.
+**Exemplo:**
 
-[Veja as diferenças com a versão anterior](https://github.com/gjunior-tray/estoque/compare/v2.1...v2.2?expand=1)
+{{ URL_DA_APP }}/index.php?controlador=usuario&metodo=login
+
+[Veja as diferenças com a versão anterior](https://github.com/gjunior-tray/estoque/compare/v2.2...v3.1?expand=1)
 
 [Voltar para a **master**](https://github.com/gjunior-tray/estoque/tree/master)
