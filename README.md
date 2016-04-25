@@ -60,19 +60,25 @@ Cada branch foi gerado a partir da última fase realizada em cada etapa e não d
 
 #### 3.1 Aplicando MVC no projeto
 
-**branch:** v3.1
+**branch:** [v3.1](https://github.com/gjunior-tray/estoque/tree/v3.1)
 
 **Info:** Separando em Model, View e Controller
 
 #### 3.2 Usando um Template Engine
 
-**branch:** v3.2
+**branch:** [v3.2](https://github.com/gjunior-tray/estoque/tree/v3.2)
 
 **Info:** Adicionando o twig no projeto
 
-#### 3.3 Por quê o composer?
+#### 3.3 Namespace
 
-**branch:** v3.3
+**branch:** [v3.3](https://github.com/gjunior-tray/estoque/tree/v3.3)
+
+**Info:** Centralizando os requires no bootstrap e adicionando namespaces
+
+#### 3.4 Por quê o composer?
+
+**branch:** [v3.4](https://github.com/gjunior-tray/estoque/tree/v3.4)
 
 **Info:** Adicionando o composer no projeto
 
