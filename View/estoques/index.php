@@ -8,7 +8,7 @@
 			<h3><?php echo $alerta; ?></h3>
 		<?php } ?>
 		<hr>
-		<form method="post" action="estoques.php">	
+		<form method="post" action="<?php echo $this->helper->url('EstoqueController@index'); ?>">	
 			<table border="1">
 				<tr>
 					<td>Id</td>

@@ -9,7 +9,7 @@
 			echo $this->mensagem->alerta(); 
 		?>
 		<hr>
-		<form method="post" action="usuarios_inserir.php">
+		<form method="post" action="<?php echo $this->helper->url('UsuarioController@inserir'); ?>">
 			<label>Nome:</label>
 			<input type="text" name="nome" length="100" required="required" value="<?php echo $nome; ?>"><br>
 			<label>E-mail:</label>
@@ -24,7 +24,7 @@
 				<option value="user" <?php if ($perfil === 'user') { echo 'selected="selected"'; } ?>>Funcionário</option>
 			</select><hr>
 			<input type="submit" value="Inserir">
-			<input type="button" value="Cancelar" onclick="javascript:window.location='usuarios_listar.php'">
+			<input type="button" value="Cancelar" onclick="javascript:window.location='<?php echo $this->helper->url('UsuarioController@listar'); ?>'">
 		</form>
 	</body>
 </html>

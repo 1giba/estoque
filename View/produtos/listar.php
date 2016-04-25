@@ -4,11 +4,13 @@
 	</head>
 	<body>
 		<h1>Listar Produtos</h1>
-		<?php if (!empty($_GET['message'])) { ?>
-			<h3 style="color:green"><?php echo $_GET['message']; ?></h3>
-		<?php } ?>
+		<?php 
+			// Exibe mensagem flash se houver
+			echo $this->mensagem->alerta();
+		?>
 		<hr>
-		<form method="get" action="produtos_listar.php">
+		<form method="get" action="<?php echo $this->helper->url('ProdutoController@listar'); ?>">
+			<?php echo $this->helper->hiddenTags('ProdutoController@listar'); ?>
 			<label>Procurar por nome:</label>
 			<input type="text" name="nome" length="100">
 			<input type="submit" value="Buscar">

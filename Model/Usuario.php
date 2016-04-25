@@ -51,7 +51,7 @@ class Usuario extends Base
 	 public function selecionaUsuarioPorId($id)
 	{
 		$qry = mysqli_query($this->con, 'SELECT * FROM usuarios WHERE id = ' . $id);
-		return mysqli_fetch_array($qry);
+		return $qry ? mysqli_fetch_array($qry) : array();
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Usuario extends Base
 	public function selecionaUsuarioPorEmail($email)
 	{
 		$qry = mysqli_query($this->con, "SELECT * FROM usuarios WHERE email = '$email'");
-		return mysqli_fetch_array($qry);
+		return $qry ? mysqli_fetch_array($qry) : array();
 	}
 
 	/**

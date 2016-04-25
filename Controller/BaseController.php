@@ -33,6 +33,11 @@ class BaseController
 	protected $models = [];
 
 	/**
+	 * @var array
+	 */ 
+	protected $availableModels = [];
+
+	/**
 	 * Método construtor
 	 *
 	 * @return void
@@ -53,9 +58,9 @@ class BaseController
 
 		// Carregar as models dinamicamente
 		foreach ($this->models as $model) {
-			if (!array_key_exists($model, $this->models)) {
+			if (!array_key_exists(strtolower($model), $this->availableModels)) {
 				require_once DIRETORIO_MODELS . '/' . $model . '.php';
-				$this->models[$model] = new $model($this->conexao->getCon());
+				$this->availableModels[strtolower($model)] = new $model($this->conexao->getCon());
 			}			
 		}
 	}
@@ -67,8 +72,8 @@ class BaseController
 	 */
 	public function __get($model)
 	{
-		if (array_key_exists($model, $this->models)) {
-            return $this->models[$model];
+		if (array_key_exists($model, $this->availableModels)) {
+            return $this->availableModels[$model];
         }
 
         return false;

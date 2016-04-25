@@ -6,12 +6,27 @@
 class Aplicacao
 {
 
+	/** 
+	 * @var string
+	 */ 
 	protected $controlador = 'HomeController';
 
+	/** 
+	 * @var string
+	 */ 
 	protected $metodo = 'index';
 
+	/** 
+	 * @var array
+	 */ 
 	protected $parametros;
 
+	/**
+	 * Método para "startar" a aplicação
+	 *
+	 * @param array $requisicao
+	 * @return html
+	 */
 	public function iniciar($requisicao = [])
 	{
 		if (!empty($requisicao['controlador'])) {

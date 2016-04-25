@@ -19,13 +19,11 @@ class ProdutoController extends BaseController
 	 * @return void
 	 */
 	public function listar()
-	{
-		if (!empty($_GET['nome'])) {
-		 	$produtos = $this->Produto->selecionaTodosProdutos($_GET['nome']);
-		 } else {
-			$produtos = $this->Produto->selecionaTodosProdutos();
-		}
+	{		
+		// Captura os produtos
+		$produtos = $this->produto->selecionaTodosProdutos(!empty($_GET['nome']) ? $_GET['nome'] : '');
 
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/produtos/listar.php';
 	}
 
@@ -37,12 +35,19 @@ class ProdutoController extends BaseController
 	public function inserir()
 	{
 		if ($_POST) {
-			if ($this->Produto->insereProduto($_POST['nome'])) {
-				$alerta = 'Produto inserido com sucesso';
-				header("Location: produtos_listar.php?message=$alerta");
+			// Caso o produto seja incluido com sucesso, criar alerta e redirecionar para a lista
+			if ($this->produto->insereProduto($_POST['nome'])) {
+
+				// Armazena a mensagem flash
+				$this->mensagem->flash('Produto inserido com sucesso', 'sucesso');
+
+				// Redireciona para a listagem de produtos
+				header("Location: " . $this->helper->url('ProdutoController@listar'));
+				exit;
 			}
 		}
 
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/produtos/inserir.php';
 	}
 
@@ -53,22 +58,34 @@ class ProdutoController extends BaseController
 	 */
 	public function alterar()
 	{
-		$produto = $this->Produto->selecionaProdutoPorId($_GET['id']);
+		if (empty($_GET['id'])) {
+			throw new Exception('Não possui id de alteração');
+		}
 
+		// Captura o produto pelo ID
+		$produto = $this->produto->selecionaProdutoPorId($_GET['id']);
+		// Caso não encontre o produto, exibir mensagem
 		if (empty($produto)) {
 			echo '<h1>Produto não encontrado!</h1>';
 			exit;
 		}
-
+		// Se vierem dados do post...
 		if ($_POST) {
-			if ($this->Produto->atualizaNomeDoProduto($produto['id'], $_POST['nome'])) {
-				$alerta = 'Produto alterado com sucesso';
-				header('Location: produtos_listar.php?message=' . $alerta);
+			// Atualizar o nome do produto
+			if ($this->produto->atualizaNomeDoProduto($produto['id'], $_POST['nome'])) {
+
+				// Armazena a mensagem flash
+				$this->mensagem->flash('Produto alterado com sucesso', 'sucesso');
+				
+				// Redirecionar para a lista e exibir mensagem
+				header("Location: " . $this->helper->url('ProdutoController@listar'));
+				exit;
 			}
 		}
+		// Captura a movimentação do estoque do produto
+		$estoques = $this->estoque->selecionaMovimentoEstoqueDoProduto($produto['id']);
 
-		$estoques = $this->Estoque->selecionaMovimentoEstoqueDoProduto($produto['id']);
-
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/produtos/alterar.php';
 	}
 }

@@ -20,30 +20,23 @@ class UsuarioController extends BaseController
 	 */
 	public function listar()
 	{
+		// Permite apenas o perfil admin
 		if (!$this->acesso->isAdmin()) {
 			echo '<h1>Acesso não permitido</h1>';
 			echo '<p><a href="../index.php">Voltar</a></p>';
 			exit;
 		}
 
-		$campo 	 = '';
-		$palavra = '';
-		$perfil  = '';
-		$ordem   = '';
-		if (!empty($_GET['busca'])) {
-			$campo   = $_GET['busca'];
-		}
-		if (!empty($_GET['palavra_buscada'])) {
-			$palavra = $_GET['palavra_buscada'];
-		}
-		if (!empty($_GET['perfil'])) {
-			$perfil = $_GET['perfil'];
-		}
-		if (!empty($_GET['ordenar'])) {
-			$ordem = $_GET['ordenar'];
-		} 
-		$usuarios = $this->Usuario->selecionaUsuarios($campo, $palavra, $perfil, $ordem);
+		// Prepara os parametros da função
+		$busca 		    = !empty($_GET['busca']) ? $_GET['busca'] : '';
+		$palavraBuscada = !empty($_GET['palavra_buscada']) ? $_GET['palavra_buscada'] : '';
+		$perfil         = !empty($_GET['perfil']) ? $_GET['perfil'] : '';
+		$ordenar        = !empty($_GET['ordenar']) ? $_GET['ordenar'] : '';
 
+		// Captura os usuários
+		$usuarios = $this->usuario->selecionaUsuarios($busca, $palavraBuscada, $perfil, $ordenar);
+
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/usuarios/listar.php';
 	}
 
@@ -75,7 +68,7 @@ class UsuarioController extends BaseController
 			$perfil = $_POST['perfil'];
 
 			// Verifica se o cliente já está utilizando o e-mail
-			$emailJaCadastrado = !empty($this->Usuario->selecionaUsuarioPorEmail($email));
+			$emailJaCadastrado = !empty($this->usuario->selecionaUsuarioPorEmail($email));
 
 			// Caso tenha 1 registro já com esse e-mail, criar alerta
 			if ($emailJaCadastrado) {
@@ -88,18 +81,19 @@ class UsuarioController extends BaseController
 					// Armazena a mensagem flash
 					$this->mensagem->flash('Senhas não conferem!', 'erro');
 				// Caso a inclusão for sucesso, redirecionar para a lista com mensagem de sucesso
-				} elseif ($this->Usuario->insereUsuario($nome, $email, $perfil, $_POST['senha'])) {
+				} elseif ($this->usuario->insereUsuario($nome, $email, $perfil, $_POST['senha'])) {
 
 					// Armazena a mensagem flash
 					$this->mensagem->flash('Usuário inserido com sucesso!', 'sucesso');
 
 					// Redireciona para a listagem de usuários
-					header("Location: usuarios_listar.php");
+					header('Location: ' . $this->helper->url('UsuarioController@listar'));
 					exit;
 				}
 			}
 		}
 
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/usuarios/inserir.php';
 	}
 
@@ -110,47 +104,62 @@ class UsuarioController extends BaseController
 	 */
 	public function alterar()
 	{
+		// Permite apenas o perfil admin
 		if (!$this->acesso->isAdmin()) {
 			echo '<h1>Acesso não permitido</h1>';
 			echo '<p><a href="' . header('Location: ' . $this->helper->url('HomeController@index')) . '">Voltar</a></p>';
 			exit;
 		}
 
+		// Caso não passe na URL o id do usuário, gerar um erro
 		if (empty($_GET['id'])) {
-			throw new Exception('Não possui id de alteração');
+			die('Você deve informar o id do usuario');
 		}
-
-		$alerta = '';
-
-		$usuario = $this->Usuario->selecionaUsuarioPorId($_GET['id']);
-
-		if ($_POST) {
-			$num = 0;
-			if ($usuario['email'] !== $_POST['email']) {
-				$usuario['email'] = $_POST['email'];
-				$num = !empty($this->Usuario->selecionaUsuarioPorEmail($usuario['email']));
-			}
-
-			$usuario['nome'] = $_POST['nome'];
-			$usuario['perfil'] = $_POST['perfil'];	
-
-			if ($num) {
-				$alerta = 'E-mail já utilizado, adicione outro.';
-			} else {
-				if ($_POST['senha'] != $_POST['senha_confirmacao']) {
-					$alerta = 'Senhas não conferem!';
-				} elseif ($this->Usuario->atualizaUsuario($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['perfil'], $_POST['senha'])) {
-					$alerta = 'Usuário alterado com sucesso';
-					header('Location: ' . $this->helper->url('UsuarioController@listar', ['message' => $alerta]));
-				}
-			}
-		}
-
+		
+		// Captura o usuário por id
+		$usuario = $this->usuario->selecionaUsuarioPorId($_GET['id']);
+		// Caso não encontre o usuário, exibir mensagem
 		if (empty($usuario)) {
 			echo '<h1>Usuário não encontrado!</h1>';
 			exit;
 		}
 
+		// Se vierem variáveis do post...
+		if ($_POST) {
+			// Inicializar variável
+			$emailJaCadastrado = false;
+			// Verificar se o e-mail do usuário cadastro é diferente do post
+			if ($usuario['email'] !== $_POST['email']) {
+				// atualiza o e-mail do usuário com o e-mail do post
+				$usuario['email'] = $_POST['email'];
+				// verifica se o e-mail já não está cadastrado
+				$emailJaCadastrado = !empty($this->usuario->selecionaUsuarioPorEmail($usuario['email']));
+			}
+			// Atualizam os dados
+			$usuario['nome'] = $_POST['nome'];
+			$usuario['perfil'] = $_POST['perfil'];	
+			// Caso o e-mail já esteja sendo utilizado, criar alerta
+			if ($emailJaCadastrado) {
+				// Armazena a mensagem flash
+				$this->mensagem->flash('E-mail já utilizado, adicione outro.', 'erro');
+			// Senão
+			} else {
+				// Valida as senhas
+				if ($_POST['senha'] != $_POST['senha_confirmacao']) {
+					// Armazena a mensagem flash
+					$this->mensagem->flash('Senhas não conferem!', 'erro');
+				// Caso a atualização for sucesso, redirecionar para a lista com mensagem de sucesso
+				} elseif ($this->usuario->atualizaUsuario($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['perfil'], !empty($_POST['senha']) ? $_POST['senha'] : '')) {
+					// Armazena a mensagem flash
+					$this->mensagem->flash('Usuário alterado com sucesso!', 'sucesso');
+					// Redireciona para a listagem de usuários
+					header('Location: ' . $this->helper->url('UsuarioController@listar'));
+					exit;
+				}
+			}
+		}
+
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/usuarios/alterar.php';
 	}
 
@@ -161,27 +170,38 @@ class UsuarioController extends BaseController
 	 */
 	public function alterarSenha()
 	{
+		
+		// Caso não passe na URL o id do usuário, gerar um erro
 		if (empty($_GET['id'])) {
 			throw new Exception('Não possui id de alteração');
 		}
+		
+		// Captura usuário pelo id
+		$usuario = $this->usuario->selecionaUsuarioPorId($_GET['id']);
 
-		$alerta  = '';
-		$usuario = $this->Usuario->selecionaUsuarioPorId($_GET['id']);
-
+		// Caso não encontre o usuário, exibir mensagem
 		if (empty($usuario)) {
 			echo '<h1>Usuário não encontrado!</h1>';
 			exit;
 		}
-
+		
+		// Se vierem variáveis do post...
 		if ($_POST) {
+			// Valida as senhas
 			if ($_POST['senha'] !== $_POST['senha_confirmacao']) {
-				$alerta = 'Senhas não conferem!';
-			} elseif ($this->Usuario->atualizaSenha($usuario['id'], $_POST['senha'])) {
-				$alerta = 'Usuário alterado com sucesso';
-				header('Location: ' . $this->helper->url('UsuarioController@listar', ['message' => $alerta]));
+				// Armazena a mensagem flash
+				$this->mensagem->flash('Senhas não conferem!', 'erro');
+			// Caso a atualização for sucesso, redireciona para a lista e exibe mensagem de sucesso
+			} elseif ($this->usuario->atualizaSenha($usuario['id'], $_POST['senha'])) {
+				// Armazena a mensagem flash
+				$this->mensagem->flash('Senha alterada com sucesso', 'sucesso');
+				// Redireciona para o menu principal
+				header('Location: ' . $this->helper->url('HomeController@index'));
+				exit;
 			}
 		}
 
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/usuarios/alterar_senha.php';
 	}
 
@@ -192,19 +212,24 @@ class UsuarioController extends BaseController
 	 */
 	public function login()
 	{ 
-		$alerta = '';
-
+		// Se vierem os dados do post
 		if ($_POST) {
-			$usuario = $this->Usuario->selecionaUsuarioPorEmail($_POST['email']);
+			// Captura o usuário por e-mail
+			$usuario = $this->usuario->selecionaUsuarioPorEmail($_POST['email']);
+			// Valida as senhas, cria alerta
 			if (empty($usuario) || $_POST['senha'] !== $usuario['senha']) {
-				$alerta = 'Usuário/Senha inválidos!';
-			} else {
+				// Armazena a mensagem flash
+				$this->mensagem->flash('Usuário/Senha inválidos!', 'erro');
+			// Senha ok!
+			} else {		
 				$this->acesso->setUsuario($usuario);
+				// Volta para o menu principal
 				header('Location: ' . $this->helper->url('HomeController@index'));
 				exit;
 			}
 		}
 
+		// Adiciona a view
 		include DIRETORIO_VIEWS . '/usuarios/login.php';
 	}
 
@@ -215,8 +240,10 @@ class UsuarioController extends BaseController
 	 */
 	public function logout()
 	{
+		// Desloga o usuário logado
 		$this->acesso->limparSessao();
 
+		// Redireciona para a tela de login
 		header('Location: ' . $this->helper->url('UsuarioController@login'));
 	}
 }

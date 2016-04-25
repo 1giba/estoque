@@ -5,7 +5,7 @@
 	<body>
 		<h1>Incluir Produto</h1>
 		<hr>
-		<form method="post" action="produtos_inserir.php">
+		<form method="post" action="<?php echo $this->helper->url('ProdutoController@inserir'); ?>">
 			<label>Nome:</label>
 			<input type="text" name="nome" length="100" required="required"><br>
 			<label>Quantidade:</label>

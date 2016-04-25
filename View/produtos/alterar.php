@@ -6,7 +6,7 @@
 		<h1>Alterar Produto</h1>
 		<h3>Produto #<?php echo $produto['id']; ?></h3>
 		<hr>
-		<form method="post" action="produtos_alterar.php?id=<?php echo $produto['id']; ?>">
+		<form method="post" action="<?php echo $this->helper->url('ProdutoController@alterar', ['id' => $produto['id']]); ?>">
 			<label>Nome:</label>
 			<input type="text" name="nome" length="100" required="required" value="<?php echo $produto['nome']; ?>"><br>
 			<label>Quantidade:</label>

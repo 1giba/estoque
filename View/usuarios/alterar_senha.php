@@ -9,7 +9,7 @@
 			<h3 style="color:red"><?php echo $alerta; ?></h3>
 		<?php } ?>
 		<hr>
-		<form method="post" action="alterar_senha.php?id=<?php echo $usuario['id']; ?>">
+		<form method="post" action="<?php echo $this->helper->url('UsuarioController@alterarSenha', ['id' => $usuario['id']]); ?>">
 			<label>Informe a senha:</label>
 			<input type="password" name="senha" length="255" required="required"><br>
 			<label>Confirme a senha:</label>

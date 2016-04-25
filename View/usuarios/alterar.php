@@ -5,11 +5,12 @@
 	<body>
 		<h1>Alterar Usuário</h1>
 		<h3>Usuário #<?php echo $usuario['id']; ?></h3>
-		<?php if ($alerta) { ?>
-			<h3 style="color:red"><?php echo $alerta; ?></h3>
-		<?php } ?>
+		<?php 
+			// Exibe mensagem flash se houver
+			echo $this->mensagem->alerta(); 
+		?>
 		<hr>
-		<form method="post" action="usuarios_alterar.php?id=<?php echo $usuario['id']; ?>">
+		<form method="post" action="<?php echo $this->helper->url('UsuarioController@alterar', ['id' => $usuario['id']]); ?>">
 			<input type="hidden" name="id" value="<?php echo $usuario['id']; ?>">
 			<label>Nome:</label>
 			<input type="text" name="nome" length="100" required="required" value="<?php echo $usuario['nome']; ?>"><br>

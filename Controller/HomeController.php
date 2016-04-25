@@ -15,6 +15,7 @@ class HomeController extends BaseController
 	 */
 	public function index()
 	{
+		// Adiciona a view da home 
 		include DIRETORIO_VIEWS . '/home/index.php';
 	}
 }

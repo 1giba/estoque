@@ -4,11 +4,13 @@
 	</head>
 	<body>
 		<h1>Listar Usuários</h1>
-		<?php if (!empty($_GET['message'])) { ?>
-			<h3 style="color:green"><?php echo $_GET['message']; ?></h3>
-		<?php } ?>
+		<?php 
+			// Exibe mensagem flash se houver
+			echo $this->mensagem->alerta(); 
+		?>
 		<hr>
-		<form method="get" action="usuarios_listar.php">
+		<form method="get" action="<?php echo $this->helper->url('UsuarioController@listar'); ?>">
+			<?php echo $this->helper->hiddenTags('UsuarioController@listar'); ?>
 			<select name="busca">
 				<option value="nome">Procurar por Nome</option>
 				<option value="email">Procurar por E-mail</option>
