@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<h1>Acesso ao Sistema</h1>
-		{{ flash }}
+		{{ flash | raw }}
 		<hr>
 		<form method="post" action="{{ action }}">
 			<label>Informe o e-mail:</label>
