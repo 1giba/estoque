@@ -43,8 +43,6 @@ class Aplicacao
 		}
 
 		$this->parametros = $requisicao;
-		
-		require_once DIRETORIO_CONTROLLERS . '/' . $this->controlador . '.php';
 
 		$controlador = '\\Foo\\Controller\\' . $this->controlador;
 

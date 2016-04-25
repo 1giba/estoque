@@ -16,7 +16,7 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.24.1-DEV';
+    const VERSION = '1.24.0';
 
     protected $charset;
     protected $loader;
@@ -855,8 +855,6 @@ class Twig_Environment
      * Gets the registered Token Parsers.
      *
      * @return Twig_TokenParserBrokerInterface A broker containing token parsers
-     *
-     * @internal
      */
     public function getTokenParsers()
     {
@@ -873,8 +871,6 @@ class Twig_Environment
      * Be warned that this method cannot return tags defined by Twig_TokenParserBrokerInterface classes.
      *
      * @return Twig_TokenParserInterface[] An array of Twig_TokenParserInterface instances
-     *
-     * @internal
      */
     public function getTags()
     {
@@ -906,8 +902,6 @@ class Twig_Environment
      * Gets the registered Node Visitors.
      *
      * @return Twig_NodeVisitorInterface[] An array of Twig_NodeVisitorInterface instances
-     *
-     * @internal
      */
     public function getNodeVisitors()
     {
@@ -953,8 +947,6 @@ class Twig_Environment
      * @param string $name The filter name
      *
      * @return Twig_Filter|false A Twig_Filter instance or false if the filter does not exist
-     *
-     * @internal
      */
     public function getFilter($name)
     {
@@ -1001,8 +993,6 @@ class Twig_Environment
      * @return Twig_FilterInterface[] An array of Twig_FilterInterface instances
      *
      * @see registerUndefinedFilterCallback
-     *
-     * @internal
      */
     public function getFilters()
     {
@@ -1043,8 +1033,6 @@ class Twig_Environment
      * Gets the registered Tests.
      *
      * @return Twig_TestInterface[] An array of Twig_TestInterface instances
-     *
-     * @internal
      */
     public function getTests()
     {
@@ -1061,8 +1049,6 @@ class Twig_Environment
      * @param string $name The test name
      *
      * @return Twig_Test|false A Twig_Test instance or false if the test does not exist
-     *
-     * @internal
      */
     public function getTest($name)
     {
@@ -1112,8 +1098,6 @@ class Twig_Environment
      * @param string $name function name
      *
      * @return Twig_Function|false A Twig_Function instance or false if the function does not exist
-     *
-     * @internal
      */
     public function getFunction($name)
     {
@@ -1160,8 +1144,6 @@ class Twig_Environment
      * @return Twig_FunctionInterface[] An array of Twig_FunctionInterface instances
      *
      * @see registerUndefinedFunctionCallback
-     *
-     * @internal
      */
     public function getFunctions()
     {
@@ -1207,8 +1189,6 @@ class Twig_Environment
      * Gets the registered Globals.
      *
      * @return array An array of globals
-     *
-     * @internal
      */
     public function getGlobals()
     {
@@ -1247,8 +1227,6 @@ class Twig_Environment
      * Gets the registered unary Operators.
      *
      * @return array An array of unary operators
-     *
-     * @internal
      */
     public function getUnaryOperators()
     {
@@ -1263,8 +1241,6 @@ class Twig_Environment
      * Gets the registered binary Operators.
      *
      * @return array An array of binary operators
-     *
-     * @internal
      */
     public function getBinaryOperators()
     {
@@ -1285,9 +1261,6 @@ class Twig_Environment
         return Twig_Error_Syntax::computeAlternatives($name, $items);
     }
 
-    /**
-     * @internal
-     */
     protected function initGlobals()
     {
         $globals = array();
@@ -1313,9 +1286,6 @@ class Twig_Environment
         return call_user_func_array('array_merge', $globals);
     }
 
-    /**
-     * @internal
-     */
     protected function initExtensions()
     {
         if ($this->extensionInitialized) {
@@ -1337,9 +1307,6 @@ class Twig_Environment
         $this->initExtension($this->staging);
     }
 
-    /**
-     * @internal
-     */
     protected function initExtension(Twig_ExtensionInterface $extension)
     {
         // filters

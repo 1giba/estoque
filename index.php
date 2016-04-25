@@ -3,7 +3,7 @@
  * Inicia a aplicação
  *
  */
-include 'bootstrap.php';
+require 'vendor/autoload.php';
 
 use Foo\App\Aplicacao;
 

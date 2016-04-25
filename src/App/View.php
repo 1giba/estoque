@@ -19,9 +19,7 @@ class View
 	 */
 	public function __construct()
 	{
-		require_once DIRETORIO_VENDORS . '/Twig-1.x/lib/Twig/Autoloader.php';
-		\Twig_Autoloader::register();
-		$loader = new \Twig_Loader_Filesystem(DIRETORIO_VIEWS);
+		$loader = new \Twig_Loader_Filesystem(__DIR__ . '/../View');
 		$this->templateEngine = new \Twig_Environment($loader);
 	}
 
