@@ -1,7 +1,7 @@
 # v3.2 - Usando um template engine
 
 Vamos adicionar um template engine na nossa aplicação MVC:
-https://github.com/twigphp/Twig/archive/1.x.zip
+https://github.com/twigphp/Twig
 
 Criaremos um diretório Vendor para armazenar essa biblioteca e uma classe Helper (/App/View.php) para utilização dessa biblioteca.
 
