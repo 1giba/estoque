@@ -4,9 +4,10 @@
 	</head>
 	<body>
 		<h1>Acesso ao Sistema</h1>
-		<?php if ($alerta) { ?>
-			<h3 style="color:red"><?php echo $alerta; ?></h3>
-		<?php } ?>
+		<?php
+			// Exibe a mensagem flash, caso houver
+			echo $this->mensagem->alerta();
+		?>
 		<hr>
 		<form method="post" action="<?php echo $this->helper->url('UsuarioController@login'); ?>">
 			<label>Informe o e-mail:</label>
